@@ -36,19 +36,6 @@ vector<vector<Point>> enumerate_all_polytope();
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 void testGMP(){
     mpz_class a, b, c;
     
@@ -75,32 +62,15 @@ void testInitialisers(){
     gd.print();
 }
 
-void testMatrix(){
-    Point p1(vector<double>{1,2},true);
-    Point p2(vector<double>{3,7},true);
-    Point p3(vector<double>{5,1},true);
-    
-    Matrix A(vector<Point> {p1,p2,p3});
-    
-    Point q1(vector<double>{1,3,5},true);
-    Point q2(vector<double>{2,4,6},true);
-    
-    Matrix B(vector<Point> {q1,q2});
-    
-    Matrix D(vector<mpq_class>{mpq_class(19,3102),mpq_class(128,127893)});
-    
-    A.print();
-    B.print();
-    Matrix C=A.multiply(B);
-    C.print();
-    D.print();
-    C.multiply(D).print();
-}
-
 void tests(){
     //testGMP();
     //testInitialisers();
-    testMatrix();
+    
+    Point v1(vector<mpq_class>{mpq_class(1,3),mpq_class(1,2)},true);
+    Point v2(vector<mpq_class>{mpq_class(1,4),mpq_class(2,5)},false);
+    Point v3(vector<mpq_class>{mpq_class(1,2),mpq_class(2,3)},true);
+    Matrix matrix(vector<Point>{v1,v2,v3});
+    matrix.testMatrix();
 }
 
 

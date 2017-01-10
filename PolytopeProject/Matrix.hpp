@@ -21,7 +21,13 @@ class Matrix{
 private:
     vector<vector<mpq_class>> matrix;
     
-    void Gauss(Matrix matrix);
+    void multiplyRow(vector<mpq_class> &row,mpq_class num);
+    
+    //Subtract high_row*scalar from low_row.
+    void subtractRows(const vector<mpq_class> high_row,vector<mpq_class> &low_row, mpq_class scalar);
+    
+    //Given the current column/row (its the same) we are looking for, find the maximum element in the column and swap that row with the current row.
+    void pivot(int column_index);
     
 public:
     Matrix(vector<Point> points);
@@ -44,6 +50,9 @@ public:
     
     void print();
     
+    void testMatrix();
+
+    void rref();
 };
 
 
