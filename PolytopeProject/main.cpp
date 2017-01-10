@@ -11,11 +11,14 @@
 #include <stdio.h>
 #include <vector>
 #include <gmpxx.h>
+#include "Point.hpp"
+#include "Matrix.hpp"
+#include "Gale_Diagram.hpp"
 
 using namespace std;
 
 //Test that GMP works
-void testGMP();
+void tests();
 
 class Point;
 
@@ -31,6 +34,21 @@ vector<Point> gale_to_polytope(Gale_Diagram);
 
 vector<vector<Point>> enumerate_all_polytope();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void testGMP(){
     mpz_class a, b, c;
     
@@ -38,100 +56,9 @@ void testGMP(){
     b = "-5678";
     c = a+b;
     cout<<c.get_d();
-    
 }
 
-
-
-class Point{
-    bool sign;
-    vector<mpq_class> coordinates;
-public:
-    Point(vector<mpq_class> coord,bool sign):sign(sign),coordinates(coord){}
-    
-    Point(vector<double> coord, bool sign):sign(sign){
-        for(double dob : coord){
-            mpq_class q(dob);
-            coordinates.push_back(q);
-        }
-    }
-    
-    bool get_sign(){return sign;}
-    vector<mpq_class> get_coordinates(){return coordinates;}
-    
-    //Note that a vector can be represented with the point-class
-    Point point_to_vector(Point point);
-
-};
-
-
-class Matrix{
-private:
-    vector<vector<mpq_class>> matrix;
-
-    void Gauss(Matrix matrix);
-
-public:
-    Matrix(vector<Point> points){
-        for(int i=0; i<points[0].get_coordinates().size(); i++){
-            matrix.push_back(*new vector<mpq_class>());
-        }
-        
-        for(int i=0; i<points.size(); i++){
-            vector<mpq_class> coord = points[i].get_coordinates();
-            for(int j=0; j<coord.size(); j++){
-                matrix[j].push_back(coord[j]);
-            }
-        }
-    };
-    Matrix(vector<mpq_class> array);
-    
-    void invert();
-    
-    void get_kernel();
-    
-    //Multiplies this matrix with B
-    void multiply(Matrix B);
-    
-    void print(){
-        cout<<endl;
-        for(int i=0; i<matrix.size(); i++){
-            for(int j=0; j<matrix[i].size(); j++){
-                cout << matrix[i][j].get_d() << " ";
-            }
-            cout<<endl;
-        }
-    }
-};
-
-
-class Gale_Diagram{
-    vector<Point> points;
-    Matrix matrix;
-public:
-    Gale_Diagram(vector<Point> points): points(points),matrix(Matrix(points)){
-    };
-    
-    //Maybe we can generate the points so that we don't have  to do this?
-    bool check_simplicial(Gale_Diagram);
-    
-    bool check_neighborly(Gale_Diagram);
-    
-    //Checks wether the convex hull of the positive points intersects the convex hull of the negative points.
-    bool check_intersect_plus_min(Gale_Diagram);
-    
-    void print(){
-        matrix.print();
-    }
-};
-
-
-
-
-
-int main(int argc, const char * argv[]) {
-    testGMP();
-    
+void testInitialisers(){
     mpq_class q (99);
     
     vector<double> vec1= {1,2,3,4};
@@ -146,6 +73,41 @@ int main(int argc, const char * argv[]) {
     Gale_Diagram gd(vec);
     
     gd.print();
+}
+
+void testMatrix(){
+    Point p1(vector<double>{1,2},true);
+    Point p2(vector<double>{3,7},true);
+    Point p3(vector<double>{5,1},true);
+    
+    Matrix A(vector<Point> {p1,p2,p3});
+    
+    Point q1(vector<double>{1,3,5},true);
+    Point q2(vector<double>{2,4,6},true);
+    
+    Matrix B(vector<Point> {q1,q2});
+    
+    Matrix D(vector<mpq_class>{mpq_class(19,3102),mpq_class(128,127893)});
+    
+    A.print();
+    B.print();
+    Matrix C=A.multiply(B);
+    C.print();
+    D.print();
+    C.multiply(D).print();
+}
+
+void tests(){
+    //testGMP();
+    //testInitialisers();
+    testMatrix();
+}
+
+
+int main(int argc, const char * argv[]) {
+    tests();
+    
+    
     
     //example, still has to be implemented:
     //bool simplicial = Gale_Diagram::check_simplicial(gd);
