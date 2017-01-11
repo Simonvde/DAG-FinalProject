@@ -19,13 +19,12 @@ class Gale_Diagram{
 public:
     Gale_Diagram(vector<Point> points);
     
-    //Maybe we can generate the points so that we don't have  to do this?
-    bool check_simplicial(Gale_Diagram);
-    
-    bool check_neighborly(Gale_Diagram);
+    bool is_neighborly();
     
     //Checks wether the convex hull of the positive points intersects the convex hull of the negative points.
-    bool check_intersect_plus_min(Gale_Diagram);
+    bool is_intersect_plus_min();
+    
+    bool is_isomorphic(const Gale_Diagram&);
     
     void print(){
         matrix.print();

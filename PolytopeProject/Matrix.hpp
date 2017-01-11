@@ -39,11 +39,11 @@ public:
     
     void invert();
     
-    void get_kernel();
+    vector<Point> get_kernel();
     
     inline mpq_class get(int row,int col);
-    mpq_class rowDim();
-    mpq_class colDim();
+    int rowDim();
+    int colDim();
     
     //Multiplies this matrix with B and returns the result
     Matrix multiply(Matrix B);

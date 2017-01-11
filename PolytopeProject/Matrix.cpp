@@ -51,11 +51,33 @@ void Matrix::subtractRows(const vector<mpq_class> high_row,vector<mpq_class> &lo
 
 void Matrix::invert(){throw new runtime_error("Not implemented");}
 
-void Matrix::get_kernel(){throw new runtime_error("Not implemented");}
+vector<Point> Matrix::get_kernel(){
+    vector<Point> base_kernel;
+    
+    rref();
+    
+    for(int i = rowDim(); i < colDim(); i++){
+        //Makes a vector of size colDim, with all zeroes
+        vector<mpq_class> vec(colDim(),0);
+        
+        //Copy the elements from column i+1 to the vector
+        for(int j=0; j<rowDim(); j++){
+            vec[j] = matrix[j][i];
+        }
+        
+        //Add the -Identity matrix
+        vec[i] = -1;
+        
+        Point point(vec,true);
+        base_kernel.push_back(point);
+    }
+    
+    return base_kernel;
+}
 
 inline mpq_class Matrix::get(int row,int col){ return matrix[row][col];}
-mpq_class Matrix::rowDim(){return matrix.size();}
-mpq_class Matrix::colDim(){return matrix[0].size();}
+int Matrix::rowDim(){return matrix.size();}
+int Matrix::colDim(){return matrix[0].size();}
 
 //Multiplies this matrix with B and returns the result
 Matrix Matrix::multiply(Matrix B){
@@ -123,7 +145,6 @@ void Matrix::rref(){
     }
 }
 
-
 void Matrix::testMatrix(){
     Point p1(vector<double>{1,2},true);
     Point p2(vector<double>{3,7},true);
@@ -155,12 +176,15 @@ void Matrix::testMatrix(){
     Point a1(vector<mpq_class>{mpq_class(1,2),mpq_class(1,3)},true);
     Point a2(vector<mpq_class>{mpq_class(1,3),mpq_class(1,5)},true);
     Point a3(vector<mpq_class>{mpq_class(19,17),mpq_class(13,12)},true);
-    Matrix M(vector<Point>{a1,a2,a3});
+    Point a4(vector<mpq_class>{mpq_class(111,3334),mpq_class(1,120137280713027)},true);
+    Matrix M(vector<Point>{a1,a2,a3,a4});
     
     M.print();
     //M.pivot(0);
     //M.print();
-    M.rref();
-    M.print();
+    vector<Point> vec = M.get_kernel();
+    Matrix N = Matrix(vec);
+    N.print();
+    M.multiply(N).print();
     
 }
