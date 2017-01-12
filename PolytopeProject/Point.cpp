@@ -24,6 +24,15 @@ bool Point::get_sign(){
 
 vector<mpq_class> Point::get_coordinates(){return coordinates;}
 
+bool Point::one_sign(){
+    int tempsgn = sgn(coordinates[0]);
+    for(int i=1; i<coordinates.size(); i++){
+        if(tempsgn == sgn(coordinates[i])){
+        } else return false;
+    }
+    return true;
+}
+
 Point point_to_vector(Point point){
     throw runtime_error("Still has to be implemented!!!");
 }

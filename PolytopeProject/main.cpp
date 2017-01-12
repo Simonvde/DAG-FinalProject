@@ -66,10 +66,25 @@ void tests(){
     //testGMP();
     //testInitialisers();
     
-    Point v1(vector<mpq_class>{mpq_class(1,3),mpq_class(1,2)},true);
-    Point v2(vector<mpq_class>{mpq_class(1,4),mpq_class(2,5)},false);
-    Point v3(vector<mpq_class>{mpq_class(1,2),mpq_class(2,3)},true);
-    Matrix matrix(vector<Point>{v1,v2,v3});
+    Point v1(vector<mpq_class>{1,2,1},true);
+    Point v2(vector<mpq_class>{2,1,1},false);
+    Point v3(vector<mpq_class>{2,-1,1},true);
+    Point v4(vector<mpq_class>{1,-2,1},false);
+    Point v5(vector<mpq_class>{-1,-2,1},true);
+    Point v6(vector<mpq_class>{-2,-1,1},false);
+    Point v7(vector<mpq_class>{-2,1,1},true);
+    Point v8(vector<mpq_class>{-1,2,1},false);
+    
+    //Gale_Diagram C47 = Gale_Diagram(vector<Point>{v1,v2,v3,v4,v5,v6,v7,v8});
+    
+    //C47.print();
+    
+    //cout << C47.is_neighborly() << endl;
+    
+    Matrix matrix(vector<Point>{v5,v6,v7,v8});
+    matrix.print();
+    vector<Point> vec = matrix.get_kernel();
+    Matrix(vec).print();
     matrix.testMatrix();
 }
 

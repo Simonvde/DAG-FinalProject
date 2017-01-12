@@ -16,6 +16,8 @@
 class Gale_Diagram{
     vector<Point> points;
     Matrix matrix;
+    
+    vector<int> findMissing(int i, int j, int k,int l);
 public:
     Gale_Diagram(vector<Point> points);
     

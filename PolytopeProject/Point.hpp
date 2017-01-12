@@ -30,6 +30,9 @@ public:
     //Note that we will present a vector with the Point class.
     Point point_to_vector(Point point);
     
+    //returns true if all coordinates have the same sign.
+    bool one_sign();
+    
 };
 
 
