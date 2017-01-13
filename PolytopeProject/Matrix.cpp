@@ -110,11 +110,11 @@ void Matrix::print(){
     }
 }
 
-void Matrix::pivot(int column_index){
+Point Matrix::pivot(int column_index){
     mpq_class max=abs(matrix[column_index][column_index]);
     int max_row = column_index;
     for(int i=column_index+1; i<rowDim(); i++){
-        mpq_class next_num = abs(matrix[0][column_index]);
+        mpq_class next_num = abs(matrix[i][column_index]);
         if(next_num > max){
             max = next_num;
             max_row=i;
@@ -122,16 +122,33 @@ void Matrix::pivot(int column_index){
     }
     if(max==0) throw runtime_error("Matrix is singular!");
     
-    multiplyRow(matrix[max_row], 1/matrix[max_row][column_index]);
+    mpq_class pivotValue = matrix[max_row][column_index];
+    multiplyRow(matrix[max_row], 1/pivotValue);
     
-    swap(matrix[column_index],matrix[max_row]);
+    bool swapped = false;
+    if(max_row != column_index){
+        swapped = true;
+        swap(matrix[column_index],matrix[max_row]);
+    }
+    
+    
+    return Point(vector<mpq_class> {pivotValue},swapped);
 }
 
 //Note: I also calculate the lower triangle (all zeroes), this can be optimised if necessary
-void Matrix::rref(){
+mpq_class Matrix::rref(){
+    mpq_class determinant = 1;
+    
+    int noSwaps=0;
+    
     for(int k=0; k<min(rowDim(),colDim()); k++){
         //Find pivot
-        pivot(k);
+        Point pivotPoint = pivot(k);
+        
+        determinant*=pivotPoint.get_coordinates()[0];
+        determinant.canonicalize();
+        
+        noSwaps += pivotPoint.get_sign();
         
         //Do for all the rows below the pivot
         for(int i=0; i<rowDim(); i++){
@@ -143,6 +160,10 @@ void Matrix::rref(){
             }
         }
     }
+    
+    if(noSwaps%2!=0) determinant*=-1;
+    
+    return determinant;
 }
 
 void Matrix::testMatrix(){
@@ -154,8 +175,14 @@ void Matrix::testMatrix(){
     
     Point q1(vector<double>{1,3,5},true);
     Point q2(vector<double>{2,4,6},true);
+    Point q3(vector<double>{7,3,1},true);
     
-    Matrix B(vector<Point> {q1,q2});
+    Matrix B(vector<Point> {q1,q2,q3});
+    cout << "determinant" << B.rref().get_d() << endl;
+    
+    Point r1(vector<double>{0,2},true);
+    Point r2(vector<double>{1,7},true);
+    cout << Matrix(vector<Point>{r1,r2}).rref().get_d() << endl;
     
     Matrix D(vector<mpq_class>{mpq_class(19,3102),mpq_class(128,127893)});
     
@@ -164,7 +191,8 @@ void Matrix::testMatrix(){
     Matrix C=A.multiply(B);
     C.print();
     D.print();
-    C.multiply(D).print();
+    
+    //C.multiply(D).print();
 
     print();
     mpq_class t = mpq_class(13,17);
@@ -186,5 +214,6 @@ void Matrix::testMatrix(){
     Matrix N = Matrix(vec);
     N.print();
     M.multiply(N).print();
+    
     
 }
