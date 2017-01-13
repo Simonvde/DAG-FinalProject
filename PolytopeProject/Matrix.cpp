@@ -166,6 +166,18 @@ mpq_class Matrix::rref(){
     return determinant;
 }
 
+mpq_class Matrix::determinant(){
+    if(rowDim()==2 && colDim()==2){
+        mpq_class pos = matrix[0][0]*matrix[1][1];
+        mpq_class neg = matrix[0][1]*matrix[1][0];
+        pos.canonicalize();
+        neg.canonicalize();
+        mpq_class result = pos-neg;
+        return result;
+    }
+    return(rref());
+}
+
 void Matrix::testMatrix(){
     Point p1(vector<double>{1,2},true);
     Point p2(vector<double>{3,7},true);
@@ -182,7 +194,7 @@ void Matrix::testMatrix(){
     
     Point r1(vector<double>{0,2},true);
     Point r2(vector<double>{1,7},true);
-    cout << Matrix(vector<Point>{r1,r2}).rref().get_d() << endl;
+    cout << Matrix(vector<Point>{r1,r2}).determinant().get_d() << endl;
     
     Matrix D(vector<mpq_class>{mpq_class(19,3102),mpq_class(128,127893)});
     

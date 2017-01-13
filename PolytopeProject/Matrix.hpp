@@ -30,6 +30,9 @@ private:
     Returns a point with the value of the pivot and as sign if rows were changed*/
     Point pivot(int column_index);
     
+    /*Brings the matrix in reduced row echelon form.
+     Returns the determinant if the matrix was square.*/
+    mpq_class rref();
 public:
     Matrix(vector<Point> points);
     
@@ -52,10 +55,8 @@ public:
     void print();
     
     void testMatrix();
-
-    /*Brings the matrix in reduced row echelon form. 
-     Returns the determinant if the matrix was square.*/
-    mpq_class rref();
+    
+    mpq_class determinant();
 };
 
 

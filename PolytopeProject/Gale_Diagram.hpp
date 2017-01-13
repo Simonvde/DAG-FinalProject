@@ -18,6 +18,18 @@ class Gale_Diagram{
     Matrix matrix;
     
     vector<int> findMissing(int i, int j, int k,int l);
+    
+    //Does NOT check for degeneracies
+    //returns -1 if x lies on the right of the oriented line ab, otherwise +1;
+    int orientation(Point x, Point a, Point b);
+    
+    //Checks if onePoint lies in the triangle defined by threePoints
+    bool in_triangle(vector<Point> onePoint, vector<Point> triangle);
+    
+    // returns whether both linesegments (vectors of size 2) intersect.
+    bool intersectingLineSegments(vector<Point> lineSegment1, vector<Point> lineSegment2);
+    
+    bool check_intersecting(vector<Point> points);
 public:
     Gale_Diagram(vector<Point> points);
     
@@ -31,6 +43,8 @@ public:
     void print(){
         matrix.print();
     }
+    
+    void test();
 };
 
 #endif /* Gale_Diagram_hpp */

@@ -10,6 +10,7 @@
 #define Point_hpp
 
 #include <stdio.h>
+#include "iostream"
 #include <vector>
 #include <gmpxx.h>
 
@@ -32,6 +33,11 @@ public:
     
     //returns true if all coordinates have the same sign.
     bool one_sign();
+    
+    //Substract the coordinates of point b from this point and return a new point
+    Point minus(Point b);
+    
+    void print();
     
 };
 
