@@ -26,8 +26,9 @@ private:
     //Subtract high_row*scalar from low_row.
     void subtractRows(const vector<mpq_class> high_row,vector<mpq_class> &low_row, mpq_class scalar);
     
-    //Given the current column/row (its the same) we are looking for, find the maximum element in the column and swap that row with the current row.
-    void pivot(int column_index);
+    /*Given the current column/row (its the same) we are looking for, find the maximum element in the column and swap that row with the current row.
+    Returns a point with the value of the pivot and as sign if rows were changed*/
+    Point pivot(int column_index);
     
 public:
     Matrix(vector<Point> points);
@@ -35,7 +36,7 @@ public:
     //Make a n*1 matrix.
     Matrix(vector<mpq_class> array);
     
-    Matrix(vector<vector<mpq_class>> vec);
+    Matrix(vector<vector<mpq_class> > vec);
     
     void invert();
     
@@ -52,7 +53,9 @@ public:
     
     void testMatrix();
 
-    void rref();
+    /*Brings the matrix in reduced row echelon form. 
+     Returns the determinant if the matrix was square.*/
+    mpq_class rref();
 };
 
 
