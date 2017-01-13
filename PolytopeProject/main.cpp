@@ -28,7 +28,30 @@ class Matrix;
 
 
 //Returns an array with all valid (neighborly and simplicial and non-isomorphic) gale diagrams
-vector<Gale_Diagram> enumerate_all_gale();
+//NOT TESTED, NOT SURE IT WORKS. Petar = intersections, in main() we should define Petar as well
+void enumerate_all_gale(Matrix Petar, int i,vector<Gale_Diagram> &AllGale) {
+	vector<bool> used(6, false);
+	vector<Point> GaleDiagram(8);
+	//vector<Gale_Diagram> AllGale();
+	GaleDiagram[0]=Point(vector<double>{0,0},true);
+	GaleDiagram[1]=Point(vector<double>{2,0},true);
+	if(i==6){
+		AllGale.push_back(GaleDiagram);
+		return;
+	}
+	for(int j = 0; j < 6; ++j){
+		if(not used[j]) {
+			GaleDiagram[i+2] = Petar[i][j];
+			used[j] = true;
+			enumerate_all_gale(Petar,i+1);
+			used[j] = false;
+		}
+	}
+}
+	
+	
+	
+}
 
 vector<Point> gale_to_polytope(Gale_Diagram);
 
@@ -91,7 +114,8 @@ void tests(){
 
 int main(int argc, const char * argv[]) {
     tests();
-    
+    vector<Gale_Diagram> AllGale();
+    enumerate_all_gale(Petar,0,AllGale);
     
     
     //example, still has to be implemented:
@@ -100,6 +124,4 @@ int main(int argc, const char * argv[]) {
 
     return 0;
 }
-
-
 
