@@ -65,6 +65,9 @@
 \newcommand{\E}{\mathrm{E}}
 \newcommand{\Var}{\mathrm{Var}}
 
+\theoremstyle{definition}
+\newtheorem{prob}{Problem}
+
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
@@ -79,7 +82,7 @@
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
-\author{Alba \and Petar \and Rebecca \and Simon Van den Eynde} % Your name
+\author{Alba Delgado \and Petar Hlad \and Rebeca Guardado \and Simon Van den Eynde} % Your name
 
 \date{\normalsize\today} % Today's date or a custom date
 
@@ -95,10 +98,15 @@
 
 \section{Introduction}
 %Write here what will do 
-
+Our goal is to solve the following problem:
+\begin{prob}
+Enumerate all simplicial neighbourly 4-polytopes on 8 vertices up to combinatorial equivalent.
+\end{prob}
+The rough idea of how we solve this problem is the following. We start from all possible affine Gale diagrams of of a 4-polytope on 8 vertices. These are point configurations of 8 points in the plane, each with an assigned positive or negative sign. We check which of these affine Gale diagrams correspond to neighbourly, simplicial polytopes, and consider only these configurations. Then, check whether they correspond to the same polytope (i.e. to a combinatorially equivalent polytope) and once we have all possible Gale diagrams, retrieve the polytope they correspond to.
 \section{Results}
 %Write here what the result is
-
+Since this is a studied problem (see \cite{GrSr67}), we know that the result we must obtain is that there are 3 different simplicial neighbourly 4-polytopes on 8 vertices. 
+%we can always describe the 3 polytopes here
 \section{Discussion}
 %Discuss the result here, say why it is special, if it is (un)expected?
 
@@ -112,5 +120,10 @@
 \section{Proof}
 %Describe why the program gives the correct result, use theorems and proof them or refer to the proof in a paper/book.
 
+\begin{thebibliography}{9}
 
+\bibitem{GrSr67}
+B. Grünbaum, V.P. Sreedharan, An enumeration of simplicial 4-polytopes with 8 vertices. \textit{Journal of Combinatiorial Theory 2}, 437-465, (1967).
+
+\end{thebibliography}
 \end{document}
