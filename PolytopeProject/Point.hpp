@@ -26,7 +26,9 @@ public:
     Point(vector<double> coord, bool sign);
     
     bool get_sign() const;
+    void set_sign(bool s);
     vector<mpq_class> get_coordinates() const;
+    
     
     //Note that we will present a vector with the Point class.
     Point point_to_vector(Point point);

@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include "Point.hpp"
 #include "Matrix.hpp"
-#include "igraph.h"
+//#include "igraph.h"
 
 class Gale_Diagram{
     vector<Point> points;
@@ -45,7 +45,7 @@ public:
     }
     
     //Make the facet-graph.
-    igraph_t makeVertexFacetStructure() const;
+ //   igraph_t makeVertexFacetStructure() const;
     
     bool isSimplicial() const;
     

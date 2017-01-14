@@ -22,12 +22,11 @@ bool Gale_Diagram::is_neighborly() const{
             
             
             //Then choose another 2
-            for(int k=0; k<points.size()-3 && (!edgeIJPresent); k++){
-                for(int l=k+1; l<points.size()-2 && (!edgeIJPresent); l++){
-                
-
-                    edgeIJPresent = isSimplex(i, j, k, l);
-                    
+            for(int k=j+1; k<points.size()-1 && (!edgeIJPresent); k++){
+                for(int l=k+1; l<points.size() && (!edgeIJPresent); l++){
+					if( (i!=k) and (i!=l) and (j!=k) and (j!=l)){
+						edgeIJPresent = isSimplex(i, j, k, l);
+					}
                 }
             }
             
@@ -46,11 +45,18 @@ vector<int> Gale_Diagram::findMissing(int i, int j, int k, int l) const{
     vector<int> pointNums(points.size());
     for(int a=0; a<points.size(); a++) pointNums[a]=a;
 
-    pointNums.erase(pointNums.begin()+j-1);
-    pointNums.erase(pointNums.begin()+i-1);
-    pointNums.erase(pointNums.begin()+l-1);
-    pointNums.erase(pointNums.begin()+k-1);
-    return pointNums;
+	pointNums[i] = -1;
+	pointNums[j] = -1;
+	pointNums[k] = -1;
+	pointNums[l] = -1;
+	
+    vector<int> pN;
+    
+    for(int a=0; a<points.size(); a++){
+		if(pointNums[a]>=0) pN.push_back(a);
+	}
+    
+    return pN;
 }
 
 
@@ -123,17 +129,22 @@ void Gale_Diagram::test() const{
 bool Gale_Diagram::isSimplex(int i, int j , int k, int l) const{
     //Remove the columns i,j,k,l by selecting the other columns:
     vector<int> pointIndices = findMissing(i,j,k,l);
+    /*cout << i << " " << j << " " << k << " " << l << endl;
+    for(int m=0; m<pointIndices.size(); m++){
+		cout << pointIndices[m] << " ";
+	}
+	cout << endl;*/
     //Select points
     vector<Point> fourPoints;
     for(int m=0; m<pointIndices.size(); m++){
         int pointIndex = pointIndices[m];
-        Point p = points[pointIndex];
+        Point p(points[pointIndex].get_coordinates(), points[pointIndex].get_sign());
         fourPoints.push_back(p);
     }
     
     return check_intersecting(fourPoints);
 }
-
+/*
 igraph_t Gale_Diagram::makeVertexFacetStructure() const{
     int s = points.size();
     
@@ -175,7 +186,7 @@ igraph_t Gale_Diagram::makeVertexFacetStructure() const{
     
     
     return graph;
-}
+}*/
 
 //For any three points, looks whether they are on a line.
 bool Gale_Diagram::isSimplicial() const{

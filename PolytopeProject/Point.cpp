@@ -28,6 +28,10 @@ bool Point::get_sign() const{
     return sign;
 }
 
+void Point::set_sign(bool s){
+	sign = s;
+}
+
 vector<mpq_class> Point::get_coordinates() const {return coordinates;}
 
 bool Point::one_sign() const{
