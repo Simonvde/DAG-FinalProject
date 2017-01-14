@@ -52,7 +52,7 @@ public:
     //Multiplies this matrix with B and returns the result
     Matrix multiply(Matrix B);
     
-    void print();
+    void print() const;
     
     void testMatrix();
     

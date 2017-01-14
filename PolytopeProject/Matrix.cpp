@@ -100,7 +100,7 @@ Matrix Matrix::multiply(Matrix B){
     return Matrix(C);
 }
 
-void Matrix::print(){
+void Matrix::print() const{
     cout<<endl;
     for(int i=0; i<matrix.size(); i++){
         for(int j=0; j<matrix[i].size(); j++){

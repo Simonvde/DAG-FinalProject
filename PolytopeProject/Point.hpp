@@ -25,19 +25,19 @@ public:
     
     Point(vector<double> coord, bool sign);
     
-    bool get_sign();
-    vector<mpq_class> get_coordinates();
+    bool get_sign() const;
+    vector<mpq_class> get_coordinates() const;
     
     //Note that we will present a vector with the Point class.
     Point point_to_vector(Point point);
     
     //returns true if all coordinates have the same sign.
-    bool one_sign();
+    bool one_sign() const;
     
     //Substract the coordinates of point b from this point and return a new point
-    Point minus(Point b);
+    Point minus (const Point &b) const;
     
-    void print();
+    void print() const;
     
 };
 

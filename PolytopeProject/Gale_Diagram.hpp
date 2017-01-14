@@ -12,46 +12,44 @@
 #include <stdio.h>
 #include "Point.hpp"
 #include "Matrix.hpp"
+#include "igraph.h"
 
 class Gale_Diagram{
     vector<Point> points;
     Matrix matrix;
     
-    vector<int> findMissing(int i, int j, int k,int l);
+    vector<int> findMissing(int i, int j, int k,int l) const;
     
     //Does NOT check for degeneracies
     //returns -1 if x lies on the right of the oriented line ab, otherwise +1;
-    int orientation(Point x, Point a, Point b);
+    int orientation(const Point &x,const Point &a,const Point &b) const;
     
     //Checks if onePoint lies in the triangle defined by threePoints
-    bool in_triangle(vector<Point> onePoint, vector<Point> triangle);
+    bool in_triangle(const vector<Point> &onePoint, const vector<Point> &triangle) const;
     
     // returns whether both linesegments (vectors of size 2) intersect.
-    bool intersectingLineSegments(vector<Point> lineSegment1, vector<Point> lineSegment2);
+    bool intersectingLineSegments(const vector<Point> &lineSegment1, const vector<Point> &lineSegment2) const;
     
-    bool check_intersecting(vector<Point> points);
+    bool check_intersecting(const vector<Point> &points) const;
     
-    bool isSimplex(int i, int j, int k, int l);
+    bool isSimplex(int i, int j, int k, int l) const;
 public:
     Gale_Diagram(vector<Point> points);
     
-    bool is_neighborly();
+    bool is_neighborly() const;
     
-    //Checks wether the convex hull of the positive points intersects the convex hull of the negative points.
-    bool is_intersect_plus_min();
+    bool is_isomorphic(const Gale_Diagram&) const;
     
-    bool is_isomorphic(const Gale_Diagram&);
-    
-    void print(){
+    void print() const{
         matrix.print();
     }
     
     //Make the facet-graph.
-    void makeVertexFacetStructure();
+    igraph_t makeVertexFacetStructure() const;
     
-    bool isSimplicial();
+    bool isSimplicial() const;
     
-    void test();
+    void test() const;
 };
 
 #endif /* Gale_Diagram_hpp */

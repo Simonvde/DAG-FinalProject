@@ -89,13 +89,27 @@ void tests(){
     Point v7(vector<mpq_class>{-2,1},true);
     Point v8(vector<mpq_class>{-1,2},false);
     
-    Gale_Diagram C48 = Gale_Diagram(vector<Point>{v1,v2,v3,v4,v5,v6,v7,v8});
-    cout << C48.isSimplicial() << endl;
+    Point v9(vector<mpq_class>{1,mpq_class(100,49)},false);
     
-    /*for(int i=0; i<100000; i++){
-        C48.is_simplicial();
-        if(i%1000==0) cout << i << endl;
-    }*/
+    Gale_Diagram C48 = Gale_Diagram(vector<Point>{v1,v2,v3,v4,v5,v6,v7,v8});
+    Gale_Diagram C482 = Gale_Diagram(vector<Point>{v9,v2,v3,v4,v5,v6,v7,v8});
+    cout << C48.isSimplicial() << " " << C482.isSimplicial() << endl;
+    
+    /*igraph_t graph = C48.makeVertexFacetStructure();
+    igraph_t graph2 = C48.makeVertexFacetStructure();
+    igraph_bool_t result;
+    igraph_isomorphic(&graph, &graph2, &result);
+    
+    cout << "isomorphism test " <<result << endl;
+    
+    igraph_destroy(&graph);
+    igraph_destroy(&graph2);*/
+
+    
+    for(int i=0; i<10000; i++){
+        C48.is_neighborly();
+        cout << i << endl;
+    }
     
     cout<<"Gale_Diagram test"<<endl;
     C48.test();
