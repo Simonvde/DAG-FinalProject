@@ -22,7 +22,7 @@ Matrix::Matrix(vector<Point> points){
     }
 };
 
-Matrix::Matrix(vector<mpq_class> array){
+Matrix::Matrix(vector<mpq_class> &array){
     for(int i=0; i<array.size(); i++){
         array[i].canonicalize();
         vector<mpq_class> vec = {array[i]};
@@ -30,7 +30,7 @@ Matrix::Matrix(vector<mpq_class> array){
     }
 }
 
-Matrix::Matrix(vector<vector<mpq_class>> vec): matrix(vec){}
+Matrix::Matrix(vector<vector<mpq_class>> &vec): matrix(vec){}
 
 void Matrix::multiplyRow(vector<mpq_class> &row,mpq_class num){
     for(int i=0; i<row.size(); i++){
@@ -49,7 +49,7 @@ void Matrix::subtractRows(const vector<mpq_class> high_row,vector<mpq_class> &lo
     }
 }
 
-void Matrix::invert(){throw new runtime_error("Not implemented");}
+//Matrix::invert{throw new runtime_error("Not implemented");}
 
 vector<Point> Matrix::get_kernel(){
     vector<Point> base_kernel;
@@ -76,11 +76,11 @@ vector<Point> Matrix::get_kernel(){
 }
 
 inline mpq_class Matrix::get(int row,int col){ return matrix[row][col];}
-int Matrix::rowDim(){return matrix.size();}
-int Matrix::colDim(){return matrix[0].size();}
+int Matrix::rowDim() const{return matrix.size();}
+int Matrix::colDim() const{return matrix[0].size();}
 
 //Multiplies this matrix with B and returns the result
-Matrix Matrix::multiply(Matrix B){
+Matrix Matrix::multiply(Matrix B) const {
     if(colDim()!=B.rowDim()){ throw runtime_error("Wrong Matrix Dimension");}
     
     vector<vector<mpq_class>> C;
@@ -178,6 +178,18 @@ mpq_class Matrix::determinant(){
     return(rref());
 }
 
+Matrix Matrix::transpose() const{
+    vector<vector<mpq_class>> nextMatrix;
+    for(int i=0; i<colDim(); i++){
+        vector<mpq_class> row;
+        for(int j=0; j<rowDim(); j++){
+            row.push_back(matrix[j][i]);
+        }
+        nextMatrix.push_back(row);
+    }
+    return Matrix(nextMatrix);
+}
+
 void Matrix::testMatrix(){
     Point p1(vector<double>{1,2},true);
     Point p2(vector<double>{3,7},true);
@@ -196,7 +208,8 @@ void Matrix::testMatrix(){
     Point r2(vector<double>{1,7},true);
     cout << Matrix(vector<Point>{r1,r2}).determinant().get_d() << endl;
     
-    Matrix D(vector<mpq_class>{mpq_class(19,3102),mpq_class(128,127893)});
+    vector<mpq_class> vec3{mpq_class(19,3102),mpq_class(128,127893)};
+    Matrix D(vec3);
     
     A.print();
     B.print();
@@ -226,6 +239,9 @@ void Matrix::testMatrix(){
     Matrix N = Matrix(vec);
     N.print();
     M.multiply(N).print();
-    
+    N.print();
+    Matrix O = N.transpose();
+    O.print();
+    O.transpose().print();
     
 }

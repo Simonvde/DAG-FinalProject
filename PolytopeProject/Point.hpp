@@ -39,6 +39,9 @@ public:
     //Substract the coordinates of point b from this point and return a new point
     Point minus (const Point &b) const;
     
+    //Multiply every coordinate of this point by a scalar and return this in a different point.
+    Point multiply(const mpq_class &scalar) const;
+    
     void print() const;
     
 };

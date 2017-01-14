@@ -89,27 +89,45 @@ void tests(){
     Point v7(vector<mpq_class>{-2,1},true);
     Point v8(vector<mpq_class>{-1,2},false);
     
-    Point v9(vector<mpq_class>{1,mpq_class(100,49)},false);
+    Point v9(vector<mpq_class>{1,mpq_class(-19,10)},true);
     
     Gale_Diagram C48 = Gale_Diagram(vector<Point>{v1,v2,v3,v4,v5,v6,v7,v8});
     Gale_Diagram C482 = Gale_Diagram(vector<Point>{v9,v2,v3,v4,v5,v6,v7,v8});
-    cout << C48.isSimplicial() << " " << C482.isSimplicial() << endl;
     
-    /*igraph_t graph = C48.makeVertexFacetStructure();
-    igraph_t graph2 = C48.makeVertexFacetStructure();
-    igraph_bool_t result;
-    igraph_isomorphic(&graph, &graph2, &result);
+    Point n1(vector<mpq_class>{1,mpq_class(1,2)},true);
+    vector<mpq_class> coord{-1,mpq_class(1,2)};
+    Point n8(coord,false);
+    Gale_Diagram N48 = Gale_Diagram(vector<Point>{n1,v2,v3,v4,v5,v6,v7,n8});
+    cout << "Simpel" <<C48.isSimplicial() << " " << C482.isSimplicial() << " " << C482.isSimplicial() << endl;
+    
+    igraph_t graph = C48.makeVertexFacetStructure();
+    igraph_t graph2 = C482.makeVertexFacetStructure();
+    igraph_t graph3 = N48.makeVertexFacetStructure();
+    igraph_bool_t result = false;
+    igraph_isomorphic(&graph, &graph3, &result);
     
     cout << "isomorphism test " <<result << endl;
     
     igraph_destroy(&graph);
-    igraph_destroy(&graph2);*/
+    igraph_destroy(&graph2);
 
-    
-    for(int i=0; i<10000; i++){
+    /*for(int a = 0; a<1000; a++){
+        int s=8;
+    for(int i=0; i<s-1; i++){
+        for(int j=i+1; j<s; j++){
+            for(int k=0; k<s-3; k++){
+                for(int l=k+1; l<s-2; l++){
+                    C48.findMissing(i, j, k, l);
+                }
+            }
+        }
+    }
+        cout<<"a"<<a<<endl;
+    }*/
+    /*for(int i=0; i<10000; i++){
         C48.is_neighborly();
         cout << i << endl;
-    }
+    }*/
     
     cout<<"Gale_Diagram test"<<endl;
     C48.test();
@@ -120,9 +138,13 @@ void tests(){
     
     Matrix matrix(vector<Point>{v5,v6,v7,v8});
     matrix.print();
-    vector<Point> vec = matrix.get_kernel();
-    Matrix(vec).print();
+    //vector<Point> vec = matrix.get_kernel();
+    //Matrix(vec).print();
     matrix.testMatrix();
+    
+    cout<<"StartTest" << endl;
+    C48.galeToPolytope();
+    cout << "EndTest" << endl;
 }
 
 

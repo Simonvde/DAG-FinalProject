@@ -9,7 +9,7 @@
 #include "Point.hpp"
 
 
-Point::Point(vector<mpq_class> coord,bool sign):sign(sign),coordinates(coord){
+Point::Point(vector<mpq_class> coord,bool sign):sign(sign){
     for(int i = 0; i<coord.size(); i++){
         mpq_class rational = coord[i];
         rational.canonicalize();
@@ -34,6 +34,7 @@ void Point::set_sign(bool s){
 
 vector<mpq_class> Point::get_coordinates() const {return coordinates;}
 
+
 bool Point::one_sign() const{
     int tempsgn = sgn(coordinates[0]);
     for(int i=1; i<coordinates.size(); i++){
@@ -57,9 +58,23 @@ Point Point::minus (const Point &b) const{
     return Point(coord,true);
 }
 
+Point Point::multiply(const mpq_class &scalar) const{
+    vector<mpq_class> nextPoints;
+    for(int i = 0; i<coordinates.size(); i++){
+        mpq_class nextCoo = coordinates[i]*scalar;
+        nextCoo.canonicalize();
+        nextPoints.push_back(nextCoo);
+    }
+    return Point(nextPoints,sign);
+    
+}
+
 void Point::print() const{
+    cout << "Point coo: ";
     for(int i=0; i<coordinates.size(); i++){
         cout << coordinates[i].get_d() << " ";
     }
-    cout << sign << endl;
+    cout << " Sign: " << sign << endl;
 }
+
+
