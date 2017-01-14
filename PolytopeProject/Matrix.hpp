@@ -37,26 +37,28 @@ public:
     Matrix(vector<Point> points);
     
     //Make a n*1 matrix.
-    Matrix(vector<mpq_class> array);
+    Matrix(vector<mpq_class> &array);
     
-    Matrix(vector<vector<mpq_class> > vec);
+    Matrix(vector<vector<mpq_class>> &vec);
     
-    void invert();
+    //Matrix invert() const;
     
     vector<Point> get_kernel();
     
     inline mpq_class get(int row,int col);
-    int rowDim();
-    int colDim();
+    int rowDim() const;
+    int colDim() const;
     
     //Multiplies this matrix with B and returns the result
-    Matrix multiply(Matrix B);
+    Matrix multiply(Matrix B) const;
     
-    void print();
+    void print() const;
     
     void testMatrix();
     
     mpq_class determinant();
+    
+    Matrix transpose() const;
 };
 
 

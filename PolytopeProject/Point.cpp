@@ -9,7 +9,13 @@
 #include "Point.hpp"
 
 
-Point::Point(vector<mpq_class> coord,bool sign):sign(sign),coordinates(coord){}
+Point::Point(vector<mpq_class> coord,bool sign):sign(sign){
+    for(int i = 0; i<coord.size(); i++){
+        mpq_class rational = coord[i];
+        rational.canonicalize();
+        coordinates.push_back(rational);
+    }
+}
 
 Point::Point(vector<double> coord, bool sign):sign(sign){
     for(double dob : coord){
@@ -18,13 +24,18 @@ Point::Point(vector<double> coord, bool sign):sign(sign){
     }
 }
 
-bool Point::get_sign(){
+bool Point::get_sign() const{
     return sign;
 }
 
-vector<mpq_class> Point::get_coordinates(){return coordinates;}
+void Point::set_sign(bool s){
+	sign = s;
+}
 
-bool Point::one_sign(){
+vector<mpq_class> Point::get_coordinates() const {return coordinates;}
+
+
+bool Point::one_sign() const{
     int tempsgn = sgn(coordinates[0]);
     for(int i=1; i<coordinates.size(); i++){
         if(tempsgn == sgn(coordinates[i])){
@@ -37,7 +48,7 @@ Point point_to_vector(Point point){
     throw runtime_error("Still has to be implemented!!!");
 }
 
-Point Point::minus(Point b){
+Point Point::minus (const Point &b) const{
     vector<mpq_class> coord(coordinates.size());
     vector<mpq_class> bcoord = b.get_coordinates();
     for(int i=0; i<coordinates.size(); i++){
@@ -47,9 +58,23 @@ Point Point::minus(Point b){
     return Point(coord,true);
 }
 
-void Point::print(){
+Point Point::multiply(const mpq_class &scalar) const{
+    vector<mpq_class> nextPoints;
+    for(int i = 0; i<coordinates.size(); i++){
+        mpq_class nextCoo = coordinates[i]*scalar;
+        nextCoo.canonicalize();
+        nextPoints.push_back(nextCoo);
+    }
+    return Point(nextPoints,sign);
+    
+}
+
+void Point::print() const{
+    cout << "Point coo: ";
     for(int i=0; i<coordinates.size(); i++){
         cout << coordinates[i].get_d() << " ";
     }
-    cout << sign << endl;
+    cout << " Sign: " << sign << endl;
 }
+
+

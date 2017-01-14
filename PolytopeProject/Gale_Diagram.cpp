@@ -13,7 +13,7 @@
 Gale_Diagram::Gale_Diagram(vector<Point> points): points(points),matrix(Matrix(points)){
 };
 
-bool Gale_Diagram::is_neighborly(){
+bool Gale_Diagram::is_neighborly() const{
     //Choose 2 points
     for(int i=0; i<points.size()-1; i++){
         for(int j=i+1; j<points.size(); j++){
@@ -22,18 +22,14 @@ bool Gale_Diagram::is_neighborly(){
             
             
             //Then choose another 2
-            for(int k=0; k<points.size()-3; k++){
-                for(int l=k+1; l<points.size()-2; l++){
-                
-
-                    edgeIJPresent = isSimplex(i, j, k, l);
-                    
-                    if(edgeIJPresent) goto skipLoop;
-                    
+            for(int k=0; k<points.size()-1 && (!edgeIJPresent); k++){
+                for(int l=k+1; l<points.size() && (!edgeIJPresent); l++){
+					if( (i!=k) and (i!=l) and (j!=k) and (j!=l)){
+						edgeIJPresent = isSimplex(i, j, k, l);
+					}
                 }
             }
             
-            skipLoop:
             if(!edgeIJPresent){
                 return false;
             }
@@ -45,26 +41,33 @@ bool Gale_Diagram::is_neighborly(){
 
 
 
-vector<int> Gale_Diagram::findMissing(int i, int j, int k, int l){
+vector<int> Gale_Diagram::findMissing(int i, int j, int k, int l) const{
     vector<int> pointNums(points.size());
     for(int a=0; a<points.size(); a++) pointNums[a]=a;
 
-    pointNums.erase(pointNums.begin()+j-1);
-    pointNums.erase(pointNums.begin()+i-1);
-    pointNums.erase(pointNums.begin()+l-1);
-    pointNums.erase(pointNums.begin()+k-1);
-    return pointNums;
+	pointNums[i] = -1;
+	pointNums[j] = -1;
+	pointNums[k] = -1;
+	pointNums[l] = -1;
+	
+    vector<int> pN;
+    
+    for(int a=0; a<points.size(); a++){
+		if(pointNums[a]>=0) pN.push_back(a);
+	}
+    
+    return pN;
 }
 
 
 //Does NOT check for degeneracies
 //returns -1 if x lies on the right of the oriented line ab, otherwise +1;
-int Gale_Diagram::orientation(Point x, Point a, Point b){
+int Gale_Diagram::orientation(const Point &x, const Point &a, const Point &b) const{
     Matrix M = Matrix(vector<Point>{b.minus(a),x.minus(a)});
     return sgn(M.determinant());
 }
 //Checks if onePoint lies in the triangle defined by threePoints
-bool Gale_Diagram::in_triangle(vector<Point> onePoint, vector<Point> triangle){
+bool Gale_Diagram::in_triangle(const vector<Point> &onePoint, const vector<Point> &triangle) const{
     Point x=onePoint[0];
     Point a=triangle[0];
     Point b=triangle[1];
@@ -75,7 +78,7 @@ bool Gale_Diagram::in_triangle(vector<Point> onePoint, vector<Point> triangle){
     return o1==o2 && o2 == o3;
 }
 // returns whether both linesegments (vectors of size 2) intersect.
-bool Gale_Diagram::intersectingLineSegments(vector<Point> lineSegment1, vector<Point> lineSegment2){
+bool Gale_Diagram::intersectingLineSegments(const vector<Point> &lineSegment1, const vector<Point> &lineSegment2) const{
     Point a=lineSegment1[0];
     Point b=lineSegment1[1];
     Point c=lineSegment2[0];
@@ -86,7 +89,7 @@ bool Gale_Diagram::intersectingLineSegments(vector<Point> lineSegment1, vector<P
     int o4 = orientation(d,a,b);
     return o1!=o2 && o3!=o4;
 }
-bool Gale_Diagram::check_intersecting(vector<Point> points){
+bool Gale_Diagram::check_intersecting(const vector<Point> &points) const{
     if(points.size()!=4) throw runtime_error("Wrong Size in check_intersecting, Gale_diagram");
     
     vector<Point> positives;
@@ -103,7 +106,7 @@ bool Gale_Diagram::check_intersecting(vector<Point> points){
     return true;
 }
 
-void Gale_Diagram::test(){
+void Gale_Diagram::test() const{
     Point a(vector<double>{0,0},true);
     Point b(vector<double>{0,1},true);
     Point c(vector<double>{1,0},true);
@@ -123,39 +126,67 @@ void Gale_Diagram::test(){
 }
 
 
-bool Gale_Diagram::isSimplex(int i, int j , int k, int l){
+bool Gale_Diagram::isSimplex(int i, int j , int k, int l) const{
     //Remove the columns i,j,k,l by selecting the other columns:
     vector<int> pointIndices = findMissing(i,j,k,l);
+    /*cout << i << " " << j << " " << k << " " << l << endl;
+    for(int m=0; m<pointIndices.size(); m++){
+		cout << pointIndices[m] << " ";
+	}
+	cout << endl;*/
     //Select points
     vector<Point> fourPoints;
-    for(int m=0; m<pointIndices.size(); m++) fourPoints.push_back(points[pointIndices[m]]);
+    for(int m=0; m<pointIndices.size(); m++){
+        int pointIndex = pointIndices[m];
+        Point p(points[pointIndex].get_coordinates(), points[pointIndex].get_sign());
+        fourPoints.push_back(p);
+    }
     
     return check_intersecting(fourPoints);
 }
 
-void Gale_Diagram::makeVertexFacetStructure(){
+igraph_t Gale_Diagram::makeVertexFacetStructure() const{
     int s = points.size();
+    
+    igraph_t graph;
+    igraph_empty(&graph, 28, IGRAPH_UNDIRECTED);
+    
+    int facetCounter=s;
+    int counter = 0;
     
     for(int i=0; i<s-3; i++){
         for(int j=i+1; j<s-2; j++){
             for(int k=j+1; k<s-1; k++){
                 for(int l=k+1; l<s; l++){
-                    cout << i << " " << j << " " << k << " " << l << endl;
+                    counter++;
 
-                    
-                    
                     if(isSimplex(i, j, k, l)){
-                        //add edge to graph
-                    };
+                        igraph_vector_t edges;
+                        
+                        igraph_vector_init(&edges, 8);
+                        
+                        vector<int> pointIndicesSimplex = findMissing(i,j,k,l);
+                        for(int i = 0; i<4; i++){
+                            VECTOR(edges)[2*i] = facetCounter;
+                            VECTOR(edges)[2*i+1] = pointIndicesSimplex[i];
+                        }
+                        
+                        igraph_add_edges(&graph, &edges, 0);
+                        igraph_vector_destroy(&edges);
+                    }
                 }
             }
         }
     }
     
-    //return graph
+    igraph_to_undirected(&graph, IGRAPH_TO_UNDIRECTED_COLLAPSE, 0);
+    
+    
+    return graph;
 }
 
-bool Gale_Diagram::isSimplicial(){
+//For any three points, looks whether they are on a line.
+bool Gale_Diagram::isSimplicial() const{
     int s = points.size();
     for(int i=0; i<s-3; i++){
         for(int j=i+1; j<s-2; j++){
@@ -192,3 +223,84 @@ bool Gale_Diagram::isSimplicial(){
     }
     return true;
 }
+
+
+
+
+vector<Point> Gale_Diagram::galeToPolytope() const{
+    //Make points homogene: positive points on z=1 and negative points on z=-1
+    vector<vector<mpq_class>> Btransposed;
+    vector<Point> BtransposedPoints;
+    for (int i = 0; i < 8; ++i){
+        vector<mpq_class> homogeneCoordinates = points[i].get_coordinates();
+        if(points[i].get_sign()) {
+            homogeneCoordinates.push_back(1);
+        }
+        else{
+            homogeneCoordinates.push_back(-1);
+        }
+        BtransposedPoints.push_back(Point(homogeneCoordinates,1));
+    }
+    
+    Matrix(BtransposedPoints).print();
+    
+    
+    //balance gale vector configuration
+    vector<vector<mpq_class>> MPoints;
+    for(int i = 0; i<3; ++i) {
+        MPoints.push_back(Btransposed[i]);
+    }
+    Matrix M(MPoints); //3x4
+    M.print();
+    
+    Point fourthColumn(Btransposed[3],true);
+    fourthColumn = fourthColumn.multiply(-1);
+    for(int i = 4; i < 8; ++i){
+        fourthColumn = fourthColumn.minus(Point(Btransposed[i],true));
+    }
+    MPoints.push_back(fourthColumn.get_coordinates());
+    Matrix M2(MPoints);
+    M2.print();
+    const vector<Point> lambda = M2.get_kernel();
+    
+    for(int i=0; i<lambda.size(); i++) lambda[i].print();
+    
+    for(int i = 0; i < 3; ++i) {
+        vector<mpq_class> pointLambda = lambda[0].get_coordinates();
+        Point p = Point(Btransposed[i],true).multiply(pointLambda[i]);
+        Btransposed[i]=p.get_coordinates();
+    }
+    
+    Matrix Bt(Btransposed);
+    
+    Bt.print();
+    
+    //vertices of polytope = kernel Bt, if necessary change row for all ones
+    /*Matrix At = Matrix(Bt.get_kernel());
+    Matrix A = At.transpose();
+    bool ones = false;
+    int ones_index;
+    for(int i = 0; i < 5; ++i) {
+        bool ok = true;
+        for(int j = 1; j < 8 and ok; ++j) {
+            if (A[j].coordinates[i] != A[j-1].coordinates[i]) ok = false;
+        }
+        if (ok) {
+            ones = true;
+            ones_index = i;
+        }
+    }
+    if (ones) {
+        for(int i = 0; i < 8; ++i) {
+            A[i].coordinates[ones_index] = A[i].coordinates[4];
+        }
+    }
+    for(int i = 0; i < 8; ++i) {
+        A[i].coordinates[4] = 1;
+    }		
+    return A;*/
+    return Bt.get_kernel();
+}
+
+
+
