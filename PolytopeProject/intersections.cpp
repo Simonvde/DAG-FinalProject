@@ -145,6 +145,7 @@ int main(int argc, const char * argv[]) {
 	p_combinations(vi, b, p, q, 6);
 	sign_combinations(vs, 7, 5, 4);
 	
+	/*
 	VP vp(8, Point(V{0,0}, false));
 	vp[6] = p;
 	vp[7] = q;
@@ -164,7 +165,10 @@ int main(int argc, const char * argv[]) {
 				
 				if(gd.isSimplicial()){
 					++number_simplicial;
-					if(gd.is_neighborly()) ++number_neighborly;
+					if(gd.is_neighborly()){
+						cout << i << " " << j << endl;
+						++number_neighborly;
+					}
 				}
 			//}
 		}
@@ -172,6 +176,19 @@ int main(int argc, const char * argv[]) {
 	
 	cout << "totals: " << endl;
 	cout << number_diagrams << " " << number_simplicial << " " << number_neighborly << endl;
+	*/
+	
+	int i, j;
+	
+	while(cin >> i >> j){
+		cout << "[";
+		for (int k=0; k < all_p_combinations[i].size(); ++k) cout << M[k][all_p_combinations[i][k]][0] << "," << M[k][all_p_combinations[i][k]][1] << ";";
+		cout << "0,0;2,0]" << endl;
+		
+		cout << "[";
+		for (int k=0; k < all_s_combinations[j].size(); ++k) cout << all_s_combinations[j][k] << ";";
+		cout << "]" << endl;
+	}
 	
 	return 0;
 }
