@@ -18,6 +18,7 @@ typedef vector<int> VI;
 typedef vector<VI> VVI;
 typedef vector<bool> VB;
 typedef vector<VB> VVB;
+typedef vector<Gale_Diagram> VGD;
 
 int number_diagrams;
 int number_simplicial;
@@ -180,14 +181,26 @@ int main(int argc, const char * argv[]) {
 	
 	int i, j;
 	
+	VGD vgd;
+	
 	while(cin >> i >> j){
-		cout << "[";
-		for (int k=0; k < all_p_combinations[i].size(); ++k) cout << M[k][all_p_combinations[i][k]][0] << "," << M[k][all_p_combinations[i][k]][1] << ";";
-		cout << "0,0;2,0]" << endl;
 		
-		cout << "[";
-		for (int k=0; k < all_s_combinations[j].size(); ++k) cout << all_s_combinations[j][k] << ";";
-		cout << "]" << endl;
+		VP vp(8, Point(V{0,0}, false));
+		
+		for (int k=0; k < all_p_combinations[i].size(); ++k) vp[k] = Point(M[k][all_p_combinations[i][k]], all_s_combinations[j][k]);
+		vp[6] = Point(V{0,0}, all_s_combinations[j][6]);
+		vp[7] = Point(V{2,0}, all_s_combinations[j][7]);
+		
+		Gale_Diagram gd(vp);
+		
+		gd.print();
+		
+		vgd.push_back(gd);		
+		
+	}
+	
+	for (int i = 0; i < vgd.size(); ++i){
+		vgd[i].print();
 	}
 	
 	return 0;
