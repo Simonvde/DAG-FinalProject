@@ -14,13 +14,15 @@
 #include "Point.hpp"
 #include "Matrix.hpp"
 #include "Gale_Diagram.hpp"
+//#include <polymake.h>
+#include "igraph.h"
 
 using namespace std;
 
 
 //Returns an array with all valid (neighborly and simplicial and non-isomorphic) gale diagrams
 //NOT TESTED, NOT SURE IT WORKS. Petar = intersections, in main() we should define Petar as well
-void enumerate_all_gale(Matrix Petar, int i,vector<Gale_Diagram> &AllGale) {
+void enumerate_all_gale(Matrix Petar, int i, vector<Gale_Diagram> &AllGale) {
 	vector<bool> used(6, false);
 	vector<Point> GaleDiagram;
 	//vector<Gale_Diagram> AllGale();
@@ -87,14 +89,20 @@ void tests(){
     Point v7(vector<mpq_class>{-2,1},true);
     Point v8(vector<mpq_class>{-1,2},false);
     
-    Gale_Diagram C47 = Gale_Diagram(vector<Point>{v1,v2,v3,v4,v5,v6,v7,v8});
+    Gale_Diagram C48 = Gale_Diagram(vector<Point>{v1,v2,v3,v4,v5,v6,v7,v8});
+    cout << C48.isSimplicial() << endl;
+    
+    /*for(int i=0; i<100000; i++){
+        C48.is_simplicial();
+        if(i%1000==0) cout << i << endl;
+    }*/
     
     cout<<"Gale_Diagram test"<<endl;
-    C47.test();
+    C48.test();
     
-    C47.print();
+    C48.print();
     
-    cout << "C47 test " << (C47.is_neighborly()) << " end test"<< endl;
+    cout << "C48 test " << (C48.is_neighborly()) << " end test"<< endl;
     
     Matrix matrix(vector<Point>{v5,v6,v7,v8});
     matrix.print();
@@ -118,3 +126,34 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
+/*int main(void) {
+    igraph_real_t avg_path;
+    igraph_t graph;
+    igraph_vector_t dimvector;
+    igraph_vector_t edges;
+    int i;
+    
+    igraph_vector_init(&dimvector, 2);
+    VECTOR(dimvector)[0]=30;
+    VECTOR(dimvector)[1]=30;
+    igraph_lattice(&graph, &dimvector, 0, IGRAPH_UNDIRECTED, 0, 1);
+    
+    igraph_rng_seed(igraph_rng_default(), 42);
+    igraph_vector_init(&edges, 20);
+    for (i=0; i<igraph_vector_size(&edges); i++) {
+        VECTOR(edges)[i] = rand() % (int)igraph_vcount(&graph);
+    }
+    
+    igraph_average_path_length(&graph, &avg_path, IGRAPH_UNDIRECTED, 1);
+    printf("Average path length (lattice):            %f\n", (double) avg_path);
+    
+    igraph_add_edges(&graph, &edges, 0);
+    igraph_average_path_length(&graph, &avg_path, IGRAPH_UNDIRECTED, 1);
+    printf("Average path length (randomized lattice): %f\n", (double) avg_path);
+    
+    igraph_vector_destroy(&dimvector);
+    igraph_vector_destroy(&edges);
+    igraph_destroy(&graph);
+    
+    return 0;
+}*/

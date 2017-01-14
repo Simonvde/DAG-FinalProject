@@ -24,14 +24,9 @@ bool Gale_Diagram::is_neighborly(){
             //Then choose another 2
             for(int k=0; k<points.size()-3; k++){
                 for(int l=k+1; l<points.size()-2; l++){
-                    
-                    //Remove the columns i,j,k,l by selecting the other columns:
-                    vector<int> pointIndices = findMissing(i,j,k,l);
-                    //Select points
-                    vector<Point> fourPoints;
-                    for(int m=0; m<pointIndices.size(); m++) fourPoints.push_back(points[pointIndices[m]]);
+                
 
-                    edgeIJPresent = check_intersecting(fourPoints);
+                    edgeIJPresent = isSimplex(i, j, k, l);
                     
                     if(edgeIJPresent) goto skipLoop;
                     
@@ -47,6 +42,8 @@ bool Gale_Diagram::is_neighborly(){
     }
     return true;
 }
+
+
 
 vector<int> Gale_Diagram::findMissing(int i, int j, int k, int l){
     vector<int> pointNums(points.size());
@@ -125,3 +122,73 @@ void Gale_Diagram::test(){
     
 }
 
+
+bool Gale_Diagram::isSimplex(int i, int j , int k, int l){
+    //Remove the columns i,j,k,l by selecting the other columns:
+    vector<int> pointIndices = findMissing(i,j,k,l);
+    //Select points
+    vector<Point> fourPoints;
+    for(int m=0; m<pointIndices.size(); m++) fourPoints.push_back(points[pointIndices[m]]);
+    
+    return check_intersecting(fourPoints);
+}
+
+void Gale_Diagram::makeVertexFacetStructure(){
+    int s = points.size();
+    
+    for(int i=0; i<s-3; i++){
+        for(int j=i+1; j<s-2; j++){
+            for(int k=j+1; k<s-1; k++){
+                for(int l=k+1; l<s; l++){
+                    cout << i << " " << j << " " << k << " " << l << endl;
+
+                    
+                    
+                    if(isSimplex(i, j, k, l)){
+                        //add edge to graph
+                    };
+                }
+            }
+        }
+    }
+    
+    //return graph
+}
+
+bool Gale_Diagram::isSimplicial(){
+    int s = points.size();
+    for(int i=0; i<s-3; i++){
+        for(int j=i+1; j<s-2; j++){
+            //If ij is a vertical line
+            if(points[i].get_coordinates()[0]==points[j].get_coordinates()[0]){
+                for(int k=j+1; k<s-1; k++){
+                    if(points[k].get_coordinates()[0]==points[i].get_coordinates()[0]) return false;
+                }
+                continue;
+            }
+            
+            //check if k is on line ij
+            Point slopeCoordinates = points[i].minus(points[j]);
+            mpq_class slope = slopeCoordinates.get_coordinates()[1]/slopeCoordinates.get_coordinates()[0];
+            slope.canonicalize();
+            
+            mpq_class aSlope = slope*points[i].get_coordinates()[0];
+            aSlope.canonicalize();
+            aSlope -= points[i].get_coordinates()[1];
+            aSlope.canonicalize();
+            
+            for(int k=j+1; k<s-1; k++){
+                mpq_class rightHandSide = slope*points[k].get_coordinates()[0];
+                rightHandSide.canonicalize();
+                
+                rightHandSide-=aSlope;
+                rightHandSide.canonicalize();
+                
+                if(points[k].get_coordinates()[1] == rightHandSide){
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}

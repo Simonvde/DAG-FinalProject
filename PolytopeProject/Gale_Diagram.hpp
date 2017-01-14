@@ -30,6 +30,8 @@ class Gale_Diagram{
     bool intersectingLineSegments(vector<Point> lineSegment1, vector<Point> lineSegment2);
     
     bool check_intersecting(vector<Point> points);
+    
+    bool isSimplex(int i, int j, int k, int l);
 public:
     Gale_Diagram(vector<Point> points);
     
@@ -43,6 +45,11 @@ public:
     void print(){
         matrix.print();
     }
+    
+    //Make the facet-graph.
+    void makeVertexFacetStructure();
+    
+    bool isSimplicial();
     
     void test();
 };
