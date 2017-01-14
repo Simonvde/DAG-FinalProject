@@ -20,7 +20,7 @@ Matrix::Matrix(vector<Point> points){
             matrix[j].push_back(coord[j]);
         }
     }
-};
+}
 
 Matrix::Matrix(vector<mpq_class> &array){
     for(int i=0; i<array.size(); i++){
@@ -49,7 +49,6 @@ void Matrix::subtractRows(const vector<mpq_class> high_row,vector<mpq_class> &lo
     }
 }
 
-//Matrix::invert{throw new runtime_error("Not implemented");}
 
 vector<Point> Matrix::get_kernel(){
     vector<Point> base_kernel;
@@ -75,9 +74,10 @@ vector<Point> Matrix::get_kernel(){
     return base_kernel;
 }
 
-inline mpq_class Matrix::get(int row,int col){ return matrix[row][col];}
-int Matrix::rowDim() const{return matrix.size();}
-int Matrix::colDim() const{return matrix[0].size();}
+mpq_class Matrix::get(int row,int col) const { return matrix[row][col];}
+int Matrix::rowDim() const{return (int)matrix.size();}
+int Matrix::colDim() const{return (int)matrix[0].size();}
+vector<vector<mpq_class>> Matrix::getMatrix() const {return matrix;}
 
 //Multiplies this matrix with B and returns the result
 Matrix Matrix::multiply(Matrix B) const {

@@ -98,7 +98,7 @@ bool Gale_Diagram::check_intersecting(const vector<Point> &points) const{
         if(p.get_sign()) positives.push_back(p);
         else negatives.push_back(p);
     }
-    int s = positives.size();
+    int s = (int) positives.size();
     if(s==0 || s==4) return false;
     if(s==1) return in_triangle(positives, negatives);
     if(s==2) return intersectingLineSegments(positives, negatives);
@@ -144,9 +144,18 @@ bool Gale_Diagram::isSimplex(int i, int j , int k, int l) const{
     
     return check_intersecting(fourPoints);
 }
+void Gale_Diagram::writeGraph(string filename){
+    FILE * pFile;
+    
+    pFile = fopen((filename+".txt").c_str() , "w");
+    igraph_t graph = makeVertexFacetStructure();
+    igraph_write_graph_edgelist(&graph,pFile);
+    igraph_destroy(&graph);
+    fclose (pFile);
+}
 
 igraph_t Gale_Diagram::makeVertexFacetStructure() const{
-    int s = points.size();
+    int s = (int)points.size();
     
     igraph_t graph;
     igraph_empty(&graph, 28, IGRAPH_UNDIRECTED);
@@ -170,8 +179,12 @@ igraph_t Gale_Diagram::makeVertexFacetStructure() const{
                             VECTOR(edges)[2*i] = facetCounter;
                             VECTOR(edges)[2*i+1] = pointIndicesSimplex[i];
                         }
+                        facetCounter++;
                         
                         igraph_add_edges(&graph, &edges, 0);
+                        
+                        //writeGraph(graph, ("counting"+to_string(counter)+".txt").c_str());
+                        
                         igraph_vector_destroy(&edges);
                     }
                 }
@@ -185,9 +198,17 @@ igraph_t Gale_Diagram::makeVertexFacetStructure() const{
     return graph;
 }
 
+bool Gale_Diagram::isIsomorphic(const Gale_Diagram &gale) const{
+    igraph_bool_t result = false;
+    igraph_t graph = makeVertexFacetStructure();
+    igraph_t otherGraph = gale.makeVertexFacetStructure();
+    igraph_isomorphic(&graph, &otherGraph, &result);
+    return result;
+}
+
 //For any three points, looks whether they are on a line.
 bool Gale_Diagram::isSimplicial() const{
-    int s = points.size();
+    int s = (int)points.size();
     for(int i=0; i<s-3; i++){
         for(int j=i+1; j<s-2; j++){
             //If ij is a vertical line
@@ -227,10 +248,9 @@ bool Gale_Diagram::isSimplicial() const{
 
 
 
-vector<Point> Gale_Diagram::galeToPolytope() const{
+Matrix Gale_Diagram::galeToPolytope() const{
     //Make points homogene: positive points on z=1 and negative points on z=-1
-    vector<vector<mpq_class>> Btransposed;
-    vector<Point> BtransposedPoints;
+    vector<vector<mpq_class>> B;
     for (int i = 0; i < 8; ++i){
         vector<mpq_class> homogeneCoordinates = points[i].get_coordinates();
         if(points[i].get_sign()) {
@@ -239,67 +259,65 @@ vector<Point> Gale_Diagram::galeToPolytope() const{
         else{
             homogeneCoordinates.push_back(-1);
         }
-        BtransposedPoints.push_back(Point(homogeneCoordinates,1));
+        B.push_back(homogeneCoordinates);
     }
     
-    Matrix(BtransposedPoints).print();
+    Matrix BT = Matrix(B).transpose();
+    vector<vector<mpq_class>> Btransposed=BT.getMatrix();
     
     
     //balance gale vector configuration
     vector<vector<mpq_class>> MPoints;
     for(int i = 0; i<3; ++i) {
-        MPoints.push_back(Btransposed[i]);
+        MPoints.push_back(B[i]);
     }
-    Matrix M(MPoints); //3x4
-    M.print();
     
-    Point fourthColumn(Btransposed[3],true);
+    Point fourthColumn(B[3],true);
     fourthColumn = fourthColumn.multiply(-1);
     for(int i = 4; i < 8; ++i){
-        fourthColumn = fourthColumn.minus(Point(Btransposed[i],true));
+        fourthColumn = fourthColumn.minus(Point(B[i],true));
     }
     MPoints.push_back(fourthColumn.get_coordinates());
     Matrix M2(MPoints);
-    M2.print();
-    const vector<Point> lambda = M2.get_kernel();
-    
-    for(int i=0; i<lambda.size(); i++) lambda[i].print();
+
+    Matrix MT = M2.transpose();
+    const vector<Point> lambda = MT.get_kernel();
     
     for(int i = 0; i < 3; ++i) {
         vector<mpq_class> pointLambda = lambda[0].get_coordinates();
-        Point p = Point(Btransposed[i],true).multiply(pointLambda[i]);
-        Btransposed[i]=p.get_coordinates();
+        Point p = Point(B[i],true).multiply(pointLambda[i]);
+        B[i]=p.get_coordinates();
     }
     
-    Matrix Bt(Btransposed);
+    Matrix Bt= Matrix(B).transpose();
     
-    Bt.print();
     
     //vertices of polytope = kernel Bt, if necessary change row for all ones
-    /*Matrix At = Matrix(Bt.get_kernel());
+    Matrix At = Matrix(Bt.get_kernel());
     Matrix A = At.transpose();
+    
     bool ones = false;
-    int ones_index;
+    int ones_index = 0;
     for(int i = 0; i < 5; ++i) {
         bool ok = true;
         for(int j = 1; j < 8 and ok; ++j) {
-            if (A[j].coordinates[i] != A[j-1].coordinates[i]) ok = false;
+            if (A.get(i,j) != A.get(i,j-1)) ok = false;
         }
         if (ok) {
             ones = true;
             ones_index = i;
         }
     }
+    vector<vector<mpq_class>> matA = A.getMatrix();
     if (ones) {
-        for(int i = 0; i < 8; ++i) {
-            A[i].coordinates[ones_index] = A[i].coordinates[4];
-        }
+        swap(matA[ones_index],matA[4]);
     }
     for(int i = 0; i < 8; ++i) {
-        A[i].coordinates[4] = 1;
-    }		
-    return A;*/
-    return Bt.get_kernel();
+        matA[4][i] = 1;
+    }
+    A = Matrix(matA);
+    
+    return A;
 }
 
 

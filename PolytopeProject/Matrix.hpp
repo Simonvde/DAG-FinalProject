@@ -34,6 +34,7 @@ private:
      Returns the determinant if the matrix was square.*/
     mpq_class rref();
 public:
+    //Make a matrix with as columns the given coordinates of the given points.
     Matrix(vector<Point> points);
     
     //Make a n*1 matrix.
@@ -41,11 +42,9 @@ public:
     
     Matrix(vector<vector<mpq_class>> &vec);
     
-    //Matrix invert() const;
-    
     vector<Point> get_kernel();
     
-    inline mpq_class get(int row,int col);
+    mpq_class get(int row,int col) const;
     int rowDim() const;
     int colDim() const;
     
@@ -59,6 +58,8 @@ public:
     mpq_class determinant();
     
     Matrix transpose() const;
+    
+    vector<vector<mpq_class>> getMatrix() const;
 };
 
 

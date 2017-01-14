@@ -37,9 +37,7 @@ public:
     Gale_Diagram(vector<Point> points);
     
     bool is_neighborly() const;
-    
-    bool is_isomorphic(const Gale_Diagram&) const;
-    
+        
     void print() const{
         matrix.print();
     }
@@ -51,7 +49,11 @@ public:
     
     void test() const;
     
-    vector<Point> galeToPolytope() const;
+    bool isIsomorphic(const Gale_Diagram &gale) const;
+    
+    void writeGraph(string filename);
+    
+    Matrix galeToPolytope() const;
 };
 
 #endif /* Gale_Diagram_hpp */

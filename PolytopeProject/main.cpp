@@ -9,6 +9,8 @@
 #include <iostream>
 #include <gmp.h>
 #include <stdio.h>
+#include<iostream>
+#include<fstream>
 #include <vector>
 #include <gmpxx.h>
 #include "Point.hpp"
@@ -16,32 +18,60 @@
 #include "Gale_Diagram.hpp"
 //#include <polymake.h>
 #include "igraph.h"
+//#include "intersectionsTest.hpp"
 
 using namespace std;
 
 
 //Returns an array with all valid (neighborly and simplicial and non-isomorphic) gale diagrams
-//NOT TESTED, NOT SURE IT WORKS. Petar = intersections, in main() we should define Petar as well
-void enumerate_all_gale(Matrix Petar, int i, vector<Gale_Diagram> &AllGale) {
-	vector<bool> used(6, false);
-	vector<Point> GaleDiagram;
-	//vector<Gale_Diagram> AllGale();
-	GaleDiagram[0]=Point(vector<double>{0,0},true);
-	GaleDiagram[1]=Point(vector<double>{2,0},true);
-	if(i==6){
-		AllGale.push_back(GaleDiagram);
-		return;
-	}
-	for(int j = 0; j < 6; ++j){
-		if(not used[j]) {
-            //GaleDiagram[i+2] = Petar.get(i,j);
-			used[j] = true;
-			//enumerate_all_gale(Petar,i+1);
-			used[j] = false;
-		}
-	}
+vector<vector<Gale_Diagram>> isomorphismClasses(vector<Gale_Diagram> neighborlyGaleDiagrams) {
+    vector<bool> sorted(neighborlyGaleDiagrams.size(),false);
+    
+    vector<vector<Gale_Diagram>> isomorphismClasses;
+    
+    for(int i=0; i<neighborlyGaleDiagrams.size(); i++){
+        if(sorted[i]) continue;
+        
+        Gale_Diagram galeI = neighborlyGaleDiagrams[i];
+        vector<Gale_Diagram> isomorphismClass;
+        isomorphismClass.push_back(galeI);
+        sorted[i]=true;
+        
+        for(int j=i+1; j<neighborlyGaleDiagrams.size(); j++){
+            if(sorted[j]) continue;
+            
+            if(galeI.isIsomorphic(neighborlyGaleDiagrams[j])){
+                isomorphismClass.push_back(neighborlyGaleDiagrams[j]);
+                sorted[j]=true;
+            }
+        }
+        isomorphismClasses.push_back(isomorphismClass);
+    }
+    return isomorphismClasses;
 }
-	
+
+void enumerateAllPolytopes(vector<Gale_Diagram> neighborlyGaleDiagrams){
+    vector<vector<Gale_Diagram>> isoClasses = isomorphismClasses(neighborlyGaleDiagrams);
+    for(int i=0; i < isoClasses.size(); i++){
+        Matrix polyMatrix = isoClasses[i][0].galeToPolytope();
+        
+        //Write vertex-facet lattice
+        isoClasses[i][0].writeGraph("Polytopes"+to_string(i));
+        
+        //Print
+        Matrix pointPM = polyMatrix.transpose();
+        vector<vector<mpq_class>> pPM = pointPM.getMatrix();
+        
+        cout << endl << "Points of polytope " + to_string(i+1) + " " << endl;
+        for(int i=0; i<pPM.size(); i++){
+            cout << i << " ";
+            Point(pPM[i],true).print();
+        }
+        cout << endl;
+        
+    }
+}
+
 
 
 vector<Point> gale_to_polytope(Gale_Diagram);
@@ -89,7 +119,7 @@ void tests(){
     Point v7(vector<mpq_class>{-2,1},true);
     Point v8(vector<mpq_class>{-1,2},false);
     
-    Point v9(vector<mpq_class>{1,mpq_class(-19,10)},true);
+    Point v9(vector<mpq_class>{1,mpq_class(21,10)},true);
     
     Gale_Diagram C48 = Gale_Diagram(vector<Point>{v1,v2,v3,v4,v5,v6,v7,v8});
     Gale_Diagram C482 = Gale_Diagram(vector<Point>{v9,v2,v3,v4,v5,v6,v7,v8});
@@ -103,13 +133,24 @@ void tests(){
     igraph_t graph = C48.makeVertexFacetStructure();
     igraph_t graph2 = C482.makeVertexFacetStructure();
     igraph_t graph3 = N48.makeVertexFacetStructure();
+    
+    /*writeGraph(graph,"CyclicPolytopeGraph.txt");
+    writeGraph(graph2,"CyclicPolytopeGraph2.txt");
+    writeGraph(graph3,"CyclicPolytopeGraph3.txt");*/
     igraph_bool_t result = false;
-    igraph_isomorphic(&graph, &graph3, &result);
+    igraph_isomorphic(&graph, &graph2, &result);
     
     cout << "isomorphism test " <<result << endl;
     
+    
+    vector<Gale_Diagram> gales{C48,C482,N48};
+    //vector<vector<Gale_Diagram>> isoC = isomorphismClasses(gales);
+    enumerateAllPolytopes(gales);
+    
+    
     igraph_destroy(&graph);
     igraph_destroy(&graph2);
+    igraph_destroy(&graph3);
 
     /*for(int a = 0; a<1000; a++){
         int s=8;
@@ -143,13 +184,16 @@ void tests(){
     matrix.testMatrix();
     
     cout<<"StartTest" << endl;
-    C48.galeToPolytope();
+    N48.galeToPolytope();
     cout << "EndTest" << endl;
 }
 
 
 int main(int argc, const char * argv[]) {
     tests();
+    
+    //Intersections inters;
+    //inters.printNeighbourly();
     
     //vector<Gale_Diagram> AllGale();
     //enumerate_all_gale(Petar,0,AllGale);
