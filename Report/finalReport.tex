@@ -58,7 +58,6 @@
 
 \usepackage{graphicx}
 \usepackage{adjustbox}
-\graphicspath{{../images/}}
 
 
 %shortcuts for typing variance and expectation
@@ -69,6 +68,7 @@
 \theoremstyle{definition}
 \newtheorem{prob}{Problem}
 
+\usepackage{listings}
 \usepackage{hyperref}
 
 %----------------------------------------------------------------------------------------
@@ -110,6 +110,9 @@ The idea of how we will solve this problem is the following. We start from all p
 %Write here what the result is
 There are 3 neighbourly simplicial 4-polytopes on 8 vertices up to combinatorial equivalent. These can be represented by (?)
 %it would be good to give the output of the code here
+
+\lstinputlisting{polytopes.txt}
+
 \section{Discussion}
 %Discuss the result here, say why it is special, if it is (un)expected?
 Since this is a studied problem (see \cite{GrSr67}), we know that the 3 different simplicial neighbourly 4-polytopes on 8 vertices are $C_4(8)$, $N_8$ and $N_8^*$, where $C_4(8)$ is the cyclic polytope on 8 vertices, and an explicit description of $N_8$ and $N_8^*$ can be found in page 125 of \cite{Gr03}.
