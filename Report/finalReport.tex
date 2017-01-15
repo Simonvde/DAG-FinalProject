@@ -126,7 +126,14 @@ The first thing the code does is find a finite number of points in the plane whe
 Since the computation of checking if a Gale diagram is neighbourly is a bit expensive, we try to reduce the number of Gale diagrams by eliminating the ones that are not simplicial. \texttt{isSimplicial} checks that in every set of four points of the diagram, no three points are aligned.\\
 \\
 \texttt{is\underline{ }neighborly} loops through every pair of two points, and for each choice of pair, it removes the pair from the Gale diagram and then checks if the convex hulls of the negative and positive points intersect.\\
-\\
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{gale_diagrams.pdf}
+\caption{Gale Diagrams}
+\label{fig:gale}
+\end{figure}
+
 \texttt{makeVertexFacetStructure} gives the vertex-facet lattice obtained from the Gale diagram, by creating a vertex $i$ for every point $i$ $(i=0,\ldots,7)$ and making a vertex for every facet, so we have $28$ vertices. The result is returned in an igraph\underline{ }t object, from the igraph library\footnote{\url{http://igraph.org/c/}}. \\
 \\
 To check whether two Gale diagrams are isomorphic, we use the in igraph built in graph isomorphism algorithm (uses BLISS).\\
