@@ -108,7 +108,7 @@ Enumerate all simplicial neighbourly 4-polytopes on 8 vertices up to combinatori
 The idea of how we will solve this problem is the following. We start from all possible affine Gale diagrams of a 4-polytope on 8 vertices. These are point configurations of 8 points in the plane, each with an assigned positive or negative sign. We check which of these affine Gale diagrams correspond to neighbourly, simplicial polytopes, and consider only these configurations. Then, check whether they correspond to the same polytope (i.e. to a combinatorially equivalent polytope) and once we have all different Gale diagrams, retrieve the polytope they correspond to.
 \section{Results}
 %Write here what the result is
-There are 3 neighbourly simplicial 4-polytopes on 8 vertices up to combinatorical equivalent. These can be represented by (?)
+There are 3 neighbourly simplicial 4-polytopes on 8 vertices up to combinatorial equivalent. These can be represented by (?)
 %it would be good to give the output of the code here
 \section{Discussion}
 %Discuss the result here, say why it is special, if it is (un)expected?
@@ -127,7 +127,7 @@ Since the computation of checking if a Gale diagram is neighbourly is a bit expe
 \\
 \texttt{is\underline{ }neighborly} loops through every pair of two points, and for each choice of pair, it removes the pair from the Gale diagram and then checks if the convex hulls of the negative and positive points intersect.\\
 \\
-\texttt{makeVertexFacetStructure} gives the vertex-facet lattice obtained from the Gale diagram, by creating a vertex $i$ for every point $i$ (i=0,\ldots,7) and making a vertex for every facet, so we have $28$ vertices. The result is returned in an igraph\underline{ }t object, from the igraph library\footnote{\url{http://igraph.org/c/}}. \\
+\texttt{makeVertexFacetStructure} gives the vertex-facet lattice obtained from the Gale diagram, by creating a vertex $i$ for every point $i$ $(i=0,\ldots,7)$ and making a vertex for every facet, so we have $28$ vertices. The result is returned in an igraph\underline{ }t object, from the igraph library\footnote{\url{http://igraph.org/c/}}. \\
 \\
 To check whether two Gale diagrams are isomorphic, we use the in igraph built in graph isomorphism algorithm (uses BLISS).\\
 \\
@@ -146,14 +146,14 @@ Finally, our construction of a polytope from a Gale diagram is based on linear a
 \begin{thebibliography}{9}
 
 \bibitem{Gr03}
-B. Grünbaum, Convex polytopes. \textit{Graduate
+B. Gr{\"u}nbaum, Convex polytopes. \textit{Graduate
 Texts in Mathematics} vol 221, (2003).
 
 \bibitem{GrSr67}
-B. Grünbaum, V.P. Sreedharan, An enumeration of simplicial 4-polytopes with 8 vertices. \textit{Journal of Combinatiorial Theory 2}, 437-465, (1967).
+B. Gr{\"u}nbaum, V.P. Sreedharan, An enumeration of simplicial 4-polytopes with 8 vertices. \textit{Journal of Combinatiorial Theory 2}, 437-465, (1967).
 
 \bibitem{Ma02}
-J. Matousek, Lectures on Discrete Geometry. \textit{Graduate
+J. Matou{\v s}ek, Lectures on Discrete Geometry. \textit{Graduate
 Texts in Mathematics} vol 212, (2002).
 
 \bibitem{Zi93}
