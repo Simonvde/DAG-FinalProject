@@ -41,13 +41,16 @@ class Intersections{
     int number_neighborly;
     VVI all_p_combinations;
     VVB all_s_combinations;
+    vector<VV> M;
+	VVI n_gale_diagrams;
     
     void sign_combinations(VB& v, int n, int ps, int ns);
 
     void p_combinations(VI& v, VB& b, const Point& p, const Point& q, int n);
     
 public:
-    void printNeighbourly();
+	Intersections();
+    VGD neighborly_diagrams();
 };
 
 #endif /* intersectionsTest_hpp */
