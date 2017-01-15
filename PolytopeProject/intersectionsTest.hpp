@@ -2,9 +2,7 @@
 //  intersectionsTest.hpp
 //  PolytopeProject
 //
-//  Created by Simon Van den Eynde on 14/01/17.
-//  Copyright © 2017 Simon Van den Eynde. All rights reserved.
-//
+
 
 #ifndef intersectionsTest_hpp
 #define intersectionsTest_hpp

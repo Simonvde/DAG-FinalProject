@@ -2,19 +2,15 @@
 //  intersectionsTest.cpp
 //  PolytopeProject
 //
-//  Created by Simon Van den Eynde on 14/01/17.
-//  Copyright © 2017 Simon Van den Eynde. All rights reserved.
-//
+
 
 #include "intersectionsTest.hpp"
 
-Intersections::Intersections(){
+Intersections::Intersections():p(Point(V{0,0}, true)),q(Point(V{2,0}, false)){
 	
 	M = vector<VV>(6, VV(6, V{0,0}));
 	n_gale_diagrams = VVI(20, VI(2,0));
-	
-	p = Point(V{0,0}, true);
-	q = Point(V{2,0}, false);
+
 	
 	VP v(6, Point(V{0,0}, true));
 	

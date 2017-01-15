@@ -9,8 +9,6 @@
 
 using namespace std;
 
-class Point;
-
 typedef vector<mpq_class> V;
 typedef vector<V> VV;
 typedef vector<Point> VP;
@@ -67,7 +65,7 @@ void p_combinations(VI& v, VB& b, const Point& p, const Point& q, int n){
 }
 
 
-int main(int argc, const char * argv[]) {
+int main2(int argc, const char * argv[]) {
 	
 	Point p = Point(V{0,0}, true);
 	Point q = Point(V{2,0}, false);

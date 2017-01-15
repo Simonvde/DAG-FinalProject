@@ -2,9 +2,7 @@
 //  Point.cpp
 //  PolytopeProject
 //
-//  Created by Simon Van den Eynde on 10/01/17.
-//  Copyright © 2017 Simon Van den Eynde. All rights reserved.
-//
+
 
 #include "Point.hpp"
 
@@ -70,11 +68,17 @@ Point Point::multiply(const mpq_class &scalar) const{
 }
 
 void Point::print() const{
-    cout << "Point coo: ";
     for(int i=0; i<coordinates.size(); i++){
-        cout << coordinates[i].get_d() << " ";
+        cout << coordinates[i].get_str() << " ";
     }
-    cout << " Sign: " << sign << endl;
+    cout << endl;
 }
-
+void Point::printLatex() const{
+    for(int i=0; i<coordinates.size(); i++){
+        mpq_class num =coordinates[i];
+        
+        cout << "$\\" << "frac{" <<num.get_num() << "}{" << num.get_den() << "}$" << " ";
+    }
+    cout << endl;
+}
 

@@ -2,9 +2,7 @@
 //  Matrix.cpp
 //  PolytopeProject
 //
-//  Created by Simon Van den Eynde on 10/01/17.
-//  Copyright © 2017 Simon Van den Eynde. All rights reserved.
-//
+
 
 #include "Matrix.hpp"
 

@@ -2,9 +2,7 @@
 //  main.cpp
 //  PolytopeProject
 //
-//  Created by Simon Van den Eynde on 26/12/16.
-//  Copyright © 2016 Simon Van den Eynde. All rights reserved.
-//
+
 
 #include <iostream>
 #include <gmp.h>
@@ -18,7 +16,7 @@
 #include "Gale_Diagram.hpp"
 //#include <polymake.h>
 #include "igraph.h"
-//#include "intersectionsTest.hpp"
+#include "intersectionsTest.hpp"
 
 using namespace std;
 
@@ -64,10 +62,10 @@ void enumerateAllPolytopes(vector<Gale_Diagram> neighborlyGaleDiagrams){
         
         cout << endl << "Points of polytope " + to_string(i+1) + " " << endl;
         for(int i=0; i<pPM.size(); i++){
-            cout << i << " ";
+            cout << "Point " << i << ": ";
             Point(pPM[i],true).print();
         }
-        cout << endl;
+        cout  << endl;
         
     }
 }
@@ -152,19 +150,6 @@ void tests(){
     igraph_destroy(&graph2);
     igraph_destroy(&graph3);
 
-    /*for(int a = 0; a<1000; a++){
-        int s=8;
-    for(int i=0; i<s-1; i++){
-        for(int j=i+1; j<s; j++){
-            for(int k=0; k<s-3; k++){
-                for(int l=k+1; l<s-2; l++){
-                    C48.findMissing(i, j, k, l);
-                }
-            }
-        }
-    }
-        cout<<"a"<<a<<endl;
-    }*/
     /*for(int i=0; i<10000; i++){
         C48.is_neighborly();
         cout << i << endl;
@@ -190,50 +175,18 @@ void tests(){
 
 
 int main(int argc, const char * argv[]) {
-    tests();
-    
-    //Intersections inters;
-    //inters.printNeighbourly();
-    
-    //vector<Gale_Diagram> AllGale();
-    //enumerate_all_gale(Petar,0,AllGale);
+    //tests();
     
     
-    //example, still has to be implemented:
-    //bool simplicial = Gale_Diagram::check_simplicial(gd);
     
-
+    
+    Intersections inters;
+    vector<Gale_Diagram> neighborlies = inters.neighborly_diagrams();
+        
+    vector<vector<Gale_Diagram>> isoC = isomorphismClasses(neighborlies);
+    
+    enumerateAllPolytopes(neighborlies);
+    
     return 0;
 }
 
-/*int main(void) {
-    igraph_real_t avg_path;
-    igraph_t graph;
-    igraph_vector_t dimvector;
-    igraph_vector_t edges;
-    int i;
-    
-    igraph_vector_init(&dimvector, 2);
-    VECTOR(dimvector)[0]=30;
-    VECTOR(dimvector)[1]=30;
-    igraph_lattice(&graph, &dimvector, 0, IGRAPH_UNDIRECTED, 0, 1);
-    
-    igraph_rng_seed(igraph_rng_default(), 42);
-    igraph_vector_init(&edges, 20);
-    for (i=0; i<igraph_vector_size(&edges); i++) {
-        VECTOR(edges)[i] = rand() % (int)igraph_vcount(&graph);
-    }
-    
-    igraph_average_path_length(&graph, &avg_path, IGRAPH_UNDIRECTED, 1);
-    printf("Average path length (lattice):            %f\n", (double) avg_path);
-    
-    igraph_add_edges(&graph, &edges, 0);
-    igraph_average_path_length(&graph, &avg_path, IGRAPH_UNDIRECTED, 1);
-    printf("Average path length (randomized lattice): %f\n", (double) avg_path);
-    
-    igraph_vector_destroy(&dimvector);
-    igraph_vector_destroy(&edges);
-    igraph_destroy(&graph);
-    
-    return 0;
-}*/
