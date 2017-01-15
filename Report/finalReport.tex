@@ -106,6 +106,9 @@ Our goal is to solve the following problem:
 Enumerate all simplicial neighbourly 4-polytopes on 8 vertices up to combinatorial equivalence.
 \end{prob}
 The idea of how we will solve this problem is the following. We start from all possible affine Gale diagrams of a 4-polytope on 8 vertices. These are point configurations of 8 points in the plane, each with an assigned positive or negative sign. We check which of these affine Gale diagrams correspond to neighbourly, simplicial polytopes, and consider only these configurations. Then, check whether they correspond to the same polytope (i.e. to a combinatorially equivalent polytope) and once we have all different Gale diagrams, retrieve the polytope they correspond to.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 %Write here what the result is
 There are 3 neighbourly simplicial 4-polytopes on 8 vertices up to combinatorial equivalent. These can be represented by (?)
@@ -113,14 +116,21 @@ There are 3 neighbourly simplicial 4-polytopes on 8 vertices up to combinatorial
 
 \lstinputlisting{polytopes.txt}
 
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{gale_diagrams.pdf}
+\caption{Gale Diagrams}
+\label{fig:gale}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}
 %Discuss the result here, say why it is special, if it is (un)expected?
 Since this is a studied problem (see \cite{GrSr67}), we know that the 3 different simplicial neighbourly 4-polytopes on 8 vertices are $C_4(8)$, $N_8$ and $N_8^*$, where $C_4(8)$ is the cyclic polytope on 8 vertices, and an explicit description of $N_8$ and $N_8^*$ can be found in page 125 of \cite{Gr03}.
-\section{Methods}
-\subsection{Program structure}
-%Describe in short the general programming structure
 
-\subsection{Program details}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programming details}
 %Describe any non-trivial things you programmed, or where you encountered a lot of trouble.
 The first thing the code does is find a finite number of points in the plane where our points of the different Gale diagrams will be. To do this, we use the fact that not the exact the location of the points is important, but the position of each point with respect to the lines defined by the other points. Therefore we can fix two of our points, $1$ and $2$, to be the lowermost, and choose the lines through these two points on which the other points will lie. To get more or less reasonable coordinates, we chose to fix the points $(0,0)$ and $(2,0)$, and the lines through them and $(1,i)$, with $i =1,\ldots,6$. Then, the points that we will consider to be on the Gale diagram are the intersections through the lines from $1$ and from $2$.\\
 \\
@@ -129,13 +139,6 @@ The first thing the code does is find a finite number of points in the plane whe
 Since the computation of checking if a Gale diagram is neighbourly is a bit expensive, we try to reduce the number of Gale diagrams by eliminating the ones that are not simplicial. \texttt{isSimplicial} checks that in every set of four points of the diagram, no three points are aligned.\\
 \\
 \texttt{is\underline{ }neighborly} loops through every pair of two points, and for each choice of pair, it removes the pair from the Gale diagram and then checks if the convex hulls of the negative and positive points intersect.\\
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[scale=0.8]{gale_diagrams.pdf}
-\caption{Gale Diagrams}
-\label{fig:gale}
-\end{figure}
 
 \texttt{makeVertexFacetStructure} gives the vertex-facet lattice obtained from the Gale diagram, by creating a vertex $i$ for every point $i$ $(i=0,\ldots,7)$ and making a vertex for every facet, so we have $28$ vertices. The result is returned in an igraph\underline{ }t object, from the igraph library\footnote{\url{http://igraph.org/c/}}. \\
 \\
