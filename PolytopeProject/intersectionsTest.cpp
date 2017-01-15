@@ -13,8 +13,8 @@ Intersections::Intersections(){
 	M = vector<VV>(6, VV(6, V{0,0}));
 	n_gale_diagrams = VVI(20, VI(2,0));
 	
-	Point p = Point(V{0,0}, true);
-	Point q = Point(V{2,0}, false);
+	p = Point(V{0,0}, true);
+	q = Point(V{2,0}, false);
 	
 	VP v(6, Point(V{0,0}, true));
 	
@@ -114,8 +114,7 @@ void Intersections::p_combinations(VI& v, VB& b, const Point& p, const Point& q,
     else all_p_combinations.push_back(VI(v));
 }
 
-
-VGD Intersections::neighborly_diagrams(){
+VGD Intersections::neighborly_diagrams_hardcoded(){
 	
 	n_gale_diagrams[0] = {0, 34};
 	n_gale_diagrams[1] = {5, 34};
@@ -164,3 +163,43 @@ VGD Intersections::neighborly_diagrams(){
 	
 	return vgd;
 }
+
+VGD Intersections::neighborly_diagrams(){
+	
+	VP vp(8, Point(V{0,0}, false));
+	vp[6] = p;
+	vp[7] = q;
+	
+	VGD vgd;
+	
+	for(int i = 0; i < all_p_combinations.size(); ++i){
+		for(int j = 0; j < all_s_combinations.size(); ++j){
+				VI p_combination = all_p_combinations[i];
+				VB s_combination = all_s_combinations[j];
+				for(int k = 0; k < 6; ++k) vp[k] = Point(M[k][p_combination[k]],s_combination[k]);
+				vp[6].set_sign(s_combination[6]);
+				vp[7].set_sign(s_combination[7]);
+				
+				++number_diagrams;
+				
+				Gale_Diagram gd(vp);
+				
+				if(gd.isSimplicial()){
+					++number_simplicial;
+					if(gd.is_neighborly()){
+						++number_neighborly;
+						vgd.push_back(gd);
+					}
+				}
+		}
+	}
+	
+	cout << "totals: " << endl;
+	cout << number_diagrams << " " << number_simplicial << " " << number_neighborly << endl;
+	
+	return vgd;
+}
+
+
+
+

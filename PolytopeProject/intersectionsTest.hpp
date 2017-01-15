@@ -22,8 +22,6 @@
 
 using namespace std;
 
-class Point;
-
 typedef vector<mpq_class> V;
 typedef vector<V> VV;
 typedef vector<Point> VP;
@@ -43,6 +41,8 @@ class Intersections{
     VVB all_s_combinations;
     vector<VV> M;
 	VVI n_gale_diagrams;
+	Point p;
+	Point q;
     
     void sign_combinations(VB& v, int n, int ps, int ns);
 
@@ -51,6 +51,7 @@ class Intersections{
 public:
 	Intersections();
     VGD neighborly_diagrams();
+    VGD neighborly_diagrams_hardcoded();
 };
 
 #endif /* intersectionsTest_hpp */
