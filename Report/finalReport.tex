@@ -117,11 +117,9 @@ In figure~\ref{fig:gale} we show all neighbourly Gale diagrams we found.
 \includegraphics[trim={0 5cm 0 5cm},clip,width=\textwidth]{gale_diagrams.pdf}
 \caption{All neighbourly Gale Diagrams, some isomorphic.}
 \label{fig:gale}
-\end{figure}
-
-
+\end{figure}\\
+\\
 After filtering on isomorphisms, we found $3$ isomorphism classes. For each of these classes we give the coordinates of $1$ polytope in figure~\ref{fig:polyPoints}. These are $3$ different neighbourly simplicial $4$-polytopes on $8$ vertices up to combinatorial equivalence.
-
 \begin{figure}[!htb]
 \lstinputlisting{polytopes.txt}
 \caption{The coordinates for all $3$ different neighbourly $4$-polytopes on $8$ vertices up to combinatorial equivalence}
@@ -138,6 +136,8 @@ Since this is a studied problem (see \cite{GrSr67}), we know that the 3 differen
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programming details}
 %Describe any non-trivial things you programmed, or where you encountered a lot of trouble.
+We start with a large number of Gale diagrams that we then filter through some tests to get to a low number of diagrams that we check for isomorphisms. Since the first computations take some time to run, we included an option in our code to use the hardcoded diagrams that we need to check for isomorphism.\\
+\\
 The first thing the code does is find a finite number of points in the plane where our points of the different Gale diagrams will be. To do this, we use the fact that not the exact the location of the points is important, but the position of each point with respect to the lines defined by the other points. Therefore we can fix two of our points, $1$ and $2$, to be the lowermost, and choose the lines through these two points on which the other points will lie. To get more or less reasonable coordinates, we chose to fix the points $(0,0)$ and $(2,0)$, and the lines through them and $(1,i)$, with $i =1,\ldots,6$. Then, the points that we will consider to be on the Gale diagram are the intersections through the lines from $1$ and from $2$.\\
 \\
 \texttt{enumerate\underline{ }all\underline{ }gale} uses backtracking to find all possible combinations of  points on the grid of intersections previously defined. To do this, it takes into account that for a polytope to be simplicial, no three points can be aligned, so when it chooses a point to lie in a line through 1, it of course lies in a line through 2 and automatically bans any other point to go through the same line through 2. This procedure produces $6! = 720$ configurations of points in the plane. In addition, it has to give a sign to each point. The first sign is prescribed (since configurations with all signs interchanged are equivalent, we can prescribe one sign). Furthermore, only configurations with $3$ or $4$ negative signs are considered, since other configurations will not result in a neighbourly polytope. This gives for each of the Gale diagrams found $7\choose 5$ $+$ $7\choose 4$ $= 91$ possible combinations of signs, so in total our program runs initially through $720\cdot 91 = 65520$ possible Gale diagrams.\\
@@ -159,7 +159,8 @@ There are some non-trivial results used to solve this problem that are worth dis
 The theory of Gale diagrams and why they allow us to reconstruct polytopes can be found in \cite{Ma02} and \cite{Zi93}. We claim that  only the position of a point in the diagram relative to the position of the lines defined by other points is important, as opposed to the exact coordinates of the point. That is quite clear: we select a point, and we can read from the diagram the faces of the polytope. This is done by looking at intersections of the convex hulls of negative and positive sets of points, and in a set where our selected point participates, it is clear that if the intersection is empty this does not change unless our point crosses a line of opposite sign, and if it is not empty this cannot change unless it crosses a line of opposite sign. \\
 \\
 To check whether two polytopes are combinatorially equivalent, we check the isomorphism of the vertex-facet lattice, instead of the face lattice. The vertex-facet lattice is enough to determine the combinatorial type of a polytope because the face lattice is graded, atomic and coatomic (\cite{Ma02}).\\
-To make sure our program doesn't make any rounding errors, we used rational numbers from the GMP-library.
+\\
+To make sure our program doesn't make any rounding errors, we used rational numbers from the GMP-library.\\
 \\
 Finally, our construction of a polytope from a Gale diagram is based on linear algebra. It is simply reversing the construction of a Gale diagram.
 
