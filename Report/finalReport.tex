@@ -142,42 +142,38 @@ The first thing the code does is find a finite number of points in the plane whe
 \\
 \texttt{enumerate\underline{ }all\underline{ }gale} uses backtracking to find all possible combinations of  points on the grid of intersections previously defined. To do this, it takes into account that for a polytope to be simplicial, no three points can be aligned, so when it chooses a point to lie in a line through 1, it of course lies in a line through 2 and automatically bans any other point to go through the same line through 2. This procedure produces $6! = 720$ configurations of points in the plane. In addition, it has to give a sign to each point. The first sign is prescribed (since configurations with all signs interchanged are equivalent, we can prescribe one sign). Furthermore, only configurations with $3$ or $4$ negative signs are considered, since other configurations will not result in a neighbourly polytope. This gives for each of the Gale diagrams found $7\choose 5$ $+$ $7\choose 4$ $= 91$ possible combinations of signs, so in total our program runs initially through $720\cdot 91 = 65520$ possible Gale diagrams.\\
 \\
-Since the computation of checking if a Gale diagram is neighbourly is a bit expensive, we try to reduce the number of Gale diagrams by eliminating the ones that are not simplicial. \texttt{isSimplicial} checks that in every set of four points of the diagram, no three points are aligned.\\
+Since the computation of checking if a Gale diagram is neighbourly is a bit expensive, we try to reduce the number of Gale diagrams by eliminating the ones that are not simplicial. \texttt{isSimplicial} checks that in every set of four points of the diagram, no three points are aligned. After this step we are left with 51688 Gale diagrams.\\
 \\
-\texttt{is\underline{ }neighborly} loops through every pair of two points, and for each choice of pair, it removes the pair from the Gale diagram and then checks if the convex hulls of the negative and positive points intersect.\\
-
+\texttt{is\underline{ }neighborly} loops through every pair of two points, and for each choice of pair, it removes the pair from the Gale diagram and then checks if the convex hulls of the negative and positive points intersect. After this step we are left with 20 Gale diagrams that can be seen in \ref{fig:gale} .\\
+\\
 \texttt{makeVertexFacetStructure} gives the vertex-facet lattice obtained from the Gale diagram, by creating a vertex $i$ for every point $i$ $(i=0,\ldots,7)$ and making a vertex for every facet, so we have $28$ vertices. The result is returned in an igraph\underline{ }t object, from the igraph library\footnote{\url{http://igraph.org/c/}}. \\
 \\
-To check whether two Gale diagrams are isomorphic, we use the in igraph built in graph isomorphism algorithm (uses BLISS).\\
+To check whether two Gale diagrams are isomorphic, we use the in igraph built in graph isomorphism algorithm (uses BLISS). We find 3 different combinatorial types. Of the 20 Gale diagrams shown in \ref{fig:gale}, 7 represent one polytope, 8 another and 5 another.\\
 \\
 \texttt{gale\underline{ }to\underline{ }polytope} takes an affine Gale diagram that we know corresponds to a simplicial and neighbourly polytope and returns projective coordinates for the vertices of the polytope. The procedure follows the reverse idea of how the vectors of the Gale transform are obtained. We initially have a matrix $B$ with the Gale points in the plane, and a sign assigned to each of the points. We project from the origin in $\RR^3$ all positive points to the plane $Z = 1$, and all negative points to the plane $Z = -1$. Once we have this, we need the vector configuration to be balanced. Therefore we scale the vectors. We need coefficients $\lambda_i$ that multiply each vector $v_i$ and such that then all rows of the matrix $B$ sum to zero. To do this we can fix $5$ of the $\lambda_i$ since any other set of three points will have full rank because we are taking Gale diagrams where no three points are aligned, and then we only need to solve a $3x3$ linear system of equations. After the rescaling of the vectors of the Gale transform, we can get the kernel of their matrix and the vector of all ones is in its affine span, so we either move it or add it to the last row (which we can do by Steinitz Exchange Lemma) and we get 8 points of $\RR^4$ in projective coordinates that are the vertices of a polytope to which the Gale diagram corresponds to.\\
 \\
-\texttt{enumerate\underline{ }all\underline{ }polytope} (?)
 \section{Proof}
 %Describe why the program gives the correct result, use theorems and proof them or refer to the proof in a paper/book.
 There are some non-trivial results used to solve this problem that are worth discussing.\\
 \\
 The theory of Gale diagrams and why they allow us to reconstruct polytopes can be found in \cite{Ma02} and \cite{Zi93}. We claim that  only the position of a point in the diagram relative to the position of the lines defined by other points is important, as opposed to the exact coordinates of the point. That is quite clear: we select a point, and we can read from the diagram the faces of the polytope. This is done by looking at intersections of the convex hulls of negative and positive sets of points, and in a set where our selected point participates, it is clear that if the intersection is empty this does not change unless our point crosses a line of opposite sign, and if it is not empty this cannot change unless it crosses a line of opposite sign. \\
 \\
-To check whether two polytopes are combinatorially equivalent, we check the isomorphism of the vertex-facet lattice, instead of the face lattice. The vertex-facet lattice is enough to determine the combinatorial type of a polytope because the face lattice is coatomic (\cite{Ma02}).\\
+To check whether two polytopes are combinatorially equivalent, we check the isomorphism of the vertex-facet lattice, instead of the face lattice. The vertex-facet lattice is enough to determine the combinatorial type of a polytope because the face lattice is graded, atomic and coatomic (\cite{Ma02}).\\
+To make sure our program doesn't make any rounding errors, we used rational numbers from the GMP-library.
 \\
 Finally, our construction of a polytope from a Gale diagram is based on linear algebra. It is simply reversing the construction of a Gale diagram.
-\begin{thebibliography}{9}
 
+\begin{thebibliography}{9}
 \bibitem{Gr03}
 B. Gr{\"u}nbaum, Convex polytopes. \textit{Graduate
 Texts in Mathematics} vol 221, (2003).
-
 \bibitem{GrSr67}
 B. Gr{\"u}nbaum, V.P. Sreedharan, An enumeration of simplicial 4-polytopes with 8 vertices. \textit{Journal of Combinatiorial Theory 2}, 437-465, (1967).
-
 \bibitem{Ma02}
 J. Matou{\v s}ek, Lectures on Discrete Geometry. \textit{Graduate
 Texts in Mathematics} vol 212, (2002).
-
 \bibitem{Zi93}
 G. Ziegler, Lectures on Polytopes. \textit{Graduate
 Texts in Mathematics} vol 212, (1993).
-
 \end{thebibliography}
 \end{document}
