@@ -8,3 +8,5 @@
 !*.cpp
 !*.pdf
 !*.txt
+!*.zip
+!*.gpg
